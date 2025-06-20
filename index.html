@@ -29,16 +29,16 @@
       display: block;
       margin-top: 0.5rem;
     }
-    input, button {
+    input, button, select { /* Ajout de select ici */
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.2rem;
       border: none;
       border-radius: 0.25rem;
       box-sizing: border-box;
+      color: #1f2937; /* Couleur de texte pour les inputs et selects */
     }
     button {
-      margin-top: 1rem;
       background: #fbbf24;
       color: #1f2937;
       font-weight: bold;
@@ -48,6 +48,18 @@
     button:hover {
       background: #d19e1a;
     }
+    select {
+        background: #f9fafb; /* Fond clair pour le select */
+        appearance: none; /* Supprime le style par défaut du navigateur */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%231f2937' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); /* Flèche personnalisée */
+        background-repeat: no-repeat;
+        background-position: right 0.7em top 50%;
+        background-size: 0.65em auto;
+        padding-right: 2.5em; /* Espace pour la flèche */
+    }
+
 
     /* Styles pour la liste d'achats */
     .shopping-list-item {
@@ -68,16 +80,21 @@
       font-size: 1.5rem;
       cursor: pointer;
       padding: 0 0.5rem;
-      margin: 0; /* Override default button margin */
-      width: auto; /* Override default button width */
+      margin: 0;
+      width: auto;
       transition: color 0.3s ease;
     }
     .shopping-list-item .delete-btn:hover {
       color: #b91c1c;
     }
     .shopping-list-item span {
-        flex-grow: 1; /* Permet au texte de l'item de prendre de la place */
-        padding-right: 10px; /* Espace entre le texte et la croix */
+        flex-grow: 1;
+        padding-right: 10px;
+    }
+    .quantity {
+        font-weight: bold;
+        margin-right: 8px;
+        color: #fbbf24;
     }
 
     /* Styles pour la liste des suggestions */
@@ -88,6 +105,7 @@
       margin-top: 1rem;
     }
     .suggestion-item {
+      position: relative;
       background: #2563eb;
       color: #f3f4f6;
       padding: 0.5rem 1rem;
@@ -96,18 +114,44 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       user-select: none;
-      white-space: nowrap; /* Empêche le texte de se casser sur plusieurs lignes */
-      overflow: hidden; /* Cache le texte qui dépasse */
-      text-overflow: ellipsis; /* Ajoute des points de suspension si le texte est trop long */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 5px;
     }
     .suggestion-item:hover {
       background: #1d4ed8;
+    }
+    .suggestion-item-text {
+        flex-grow: 1;
+        padding-right: 5px;
+    }
+    .delete-suggestion-btn {
+      background: none;
+      border: none;
+      color: #f3f4f6;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 0.2rem;
+      margin: 0;
+      width: auto;
+      transition: color 0.3s ease;
+      line-height: 1;
+    }
+    .delete-suggestion-btn:hover {
+      color: #ef4444;
     }
 
     .add-suggestion-form {
         margin-top: 1.5rem;
         border-top: 1px solid #4b5563;
         padding-top: 1rem;
+    }
+    .filter-controls {
+        margin-bottom: 1rem;
     }
 
     @media (max-width: 640px) {
@@ -131,23 +175,47 @@
 
   <div class="section-container">
     <h2>Articles à acheter</h2>
+    <div id="shoppingList" style="margin-top: 1rem;">
+      </div>
     <form id="shoppingForm" autocomplete="off">
         <label for="newItem">Ajouter un article :</label>
         <input type="text" id="newItem" placeholder="Ex: Lait, Pain, Pommes..." required />
         <button type="submit">Ajouter à la liste ✅</button>
     </form>
-    <div id="shoppingList" style="margin-top: 1rem;">
-      </div>
   </div>
 
   <div class="section-container">
-    <h2>Ajouter des suggestions</h2>
+    <h2>Suggestions par catégorie</h2>
+    <div class="filter-controls">
+        <label for="categoryFilter">Filtrer par catégorie :</label>
+        <select id="categoryFilter">
+            <option value="Toutes">Toutes les catégories</option>
+            <option value="Viande">Viande</option>
+            <option value="Fruit">Fruit</option>
+            <option value="Légume">Légume</option>
+            <option value="Produit ménager">Produit ménager</option>
+            <option value="Produit de beauté">Produit de beauté</option>
+            <option value="Autre">Autre</option>
+        </select>
+    </div>
     <div id="suggestionsList" class="suggestions-grid">
       </div>
 
     <form id="addSuggestionForm" class="add-suggestion-form" autocomplete="off">
         <label for="newSuggestion">Nouvelle suggestion :</label>
         <input type="text" id="newSuggestion" placeholder="Ex: Fromage, Chocolat..." required />
+        
+        <label for="suggestionCategory">Catégorie :</label>
+        <select id="suggestionCategory" required>
+            <option value="">Choisir une catégorie</option>
+            <option value="Viande">Viande</option>
+            <option value="Fruit">Fruit</option>
+            <option value="Légume">Légume</option>
+            <option value="Produit ménager">Produit ménager</option>
+            <option value="Produit de beauté">Produit de beauté</option>
+            <option value="Autre">Autre</option>
+        </select>
+        
         <button type="submit">Ajouter comme suggestion ✨</button>
     </form>
   </div>
@@ -159,13 +227,15 @@
 
     const addSuggestionForm = document.getElementById('addSuggestionForm');
     const newSuggestionInput = document.getElementById('newSuggestion');
+    const suggestionCategorySelect = document.getElementById('suggestionCategory'); // Nouveau select pour ajouter une suggestion
     const suggestionsListDiv = document.getElementById('suggestionsList');
+    const categoryFilterSelect = document.getElementById('categoryFilter'); // Nouveau select pour filtrer les suggestions
 
     // --- Fonctions de gestion de la liste d'achats ---
 
     function loadShoppingList() {
       let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-      shoppingListDiv.innerHTML = ''; // Vide la liste actuelle
+      shoppingListDiv.innerHTML = '';
 
       if (items.length === 0) {
         shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af;">Votre liste est vide pour l\'instant !</p>';
@@ -174,26 +244,31 @@
       items.forEach((item, index) => {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'shopping-list-item';
+        const quantityDisplay = item.quantity > 1 ? `<span class="quantity">${item.quantity}x</span>` : '';
         itemDiv.innerHTML = `
-          <span>${item}</span>
+          ${quantityDisplay}<span>${item.name}</span>
           <button class="delete-btn" data-index="${index}">✖</button>
         `;
         shoppingListDiv.appendChild(itemDiv);
       });
     }
 
-    function addShoppingItem(item) {
-      if (!item.trim()) return; // Ne pas ajouter d'éléments vides
+    function addShoppingItem(itemName) {
+      if (!itemName.trim()) return;
 
       let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-      // Éviter les doublons simples (insensible à la casse)
-      if (!items.some(existingItem => existingItem.toLowerCase() === item.toLowerCase())) {
-          items.push(item.trim());
-          localStorage.setItem('shopping_list_items', JSON.stringify(items));
-          loadShoppingList();
+      const lowerCaseItemName = itemName.trim().toLowerCase();
+
+      const existingItemIndex = items.findIndex(item => item.name.toLowerCase() === lowerCaseItemName);
+
+      if (existingItemIndex !== -1) {
+        items[existingItemIndex].quantity++;
       } else {
-          alert(`"${item}" est déjà dans votre liste d'achats !`);
+        items.push({ name: itemName.trim(), quantity: 1 });
       }
+
+      localStorage.setItem('shopping_list_items', JSON.stringify(items));
+      loadShoppingList();
     }
 
     function deleteShoppingItem(index) {
@@ -208,36 +283,73 @@
     // --- Fonctions de gestion des suggestions ---
 
     function loadSuggestions() {
-      let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-      suggestionsListDiv.innerHTML = ''; // Vide la liste actuelle
+      let allSuggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+      suggestionsListDiv.innerHTML = '';
 
-      if (suggestions.length === 0) {
-          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Ajoutez vos premières suggestions ci-dessous !</p>';
+      const selectedCategory = categoryFilterSelect.value;
+      
+      // Filtrer les suggestions si une catégorie spécifique est sélectionnée
+      const filteredSuggestions = selectedCategory === 'Toutes' 
+        ? allSuggestions 
+        : allSuggestions.filter(sug => sug.category === selectedCategory);
+
+      if (filteredSuggestions.length === 0) {
+          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Aucune suggestion pour cette catégorie. Ajoutez-en ci-dessous !</p>';
       }
 
-      suggestions.forEach(suggestion => {
+      filteredSuggestions.forEach((suggestion, index) => {
+        // Trouvez l'index original de la suggestion dans la liste non filtrée
+        // pour que la suppression fonctionne correctement.
+        const originalIndex = allSuggestions.findIndex(s => s.name === suggestion.name && s.category === suggestion.category);
+
         const suggestionDiv = document.createElement('div');
         suggestionDiv.className = 'suggestion-item';
-        suggestionDiv.textContent = suggestion;
-        suggestionDiv.addEventListener('click', () => {
-          addShoppingItem(suggestion); // Ajoute la suggestion à la liste d'achats
+        suggestionDiv.innerHTML = `
+            <span class="suggestion-item-text">${suggestion.name}</span>
+            <button class="delete-suggestion-btn" data-index="${originalIndex}">✖</button>
+        `;
+        
+        suggestionDiv.querySelector('.suggestion-item-text').addEventListener('click', () => {
+          addShoppingItem(suggestion.name); 
         });
+
+        suggestionDiv.querySelector('.delete-suggestion-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm(`Supprimer la suggestion "${suggestion.name}" (${suggestion.category}) ?`)) {
+                deleteSuggestion(originalIndex);
+            }
+        });
+
         suggestionsListDiv.appendChild(suggestionDiv);
       });
     }
 
-    function addSuggestion(suggestion) {
-      if (!suggestion.trim()) return; // Ne pas ajouter de suggestions vides
+    function addSuggestion(suggestionName, category) {
+      if (!suggestionName.trim() || !category.trim()) {
+        alert('Veuillez entrer un nom de suggestion ET choisir une catégorie.');
+        return;
+      }
 
       let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-      // Éviter les doublons (insensible à la casse)
-      if (!suggestions.some(existingSuggestion => existingSuggestion.toLowerCase() === suggestion.toLowerCase())) {
-          suggestions.push(suggestion.trim());
+      const lowerCaseSuggestionName = suggestionName.trim().toLowerCase();
+
+      // Éviter les doublons (même nom et même catégorie)
+      if (!suggestions.some(sug => sug.name.toLowerCase() === lowerCaseSuggestionName && sug.category === category)) {
+          suggestions.push({ name: suggestionName.trim(), category: category.trim() });
           localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-          loadSuggestions();
+          loadSuggestions(); // Recharge les suggestions avec le filtre actuel
       } else {
-          alert(`"${suggestion}" est déjà une suggestion !`);
+          alert(`"${suggestionName.trim()}" est déjà une suggestion dans la catégorie "${category}" !`);
       }
+    }
+
+    function deleteSuggestion(index) {
+        let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+        if (index >= 0 && index < suggestions.length) {
+            suggestions.splice(index, 1);
+            localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
+            loadSuggestions(); // Recharge les suggestions avec le filtre actuel
+        }
     }
 
     // --- Gestionnaires d'événements ---
@@ -245,10 +357,9 @@
     shoppingForm.addEventListener('submit', e => {
       e.preventDefault();
       addShoppingItem(newItemInput.value);
-      newItemInput.value = ''; // Vide le champ après ajout
+      newItemInput.value = '';
     });
 
-    // Utilise la délégation d'événements pour le bouton de suppression
     shoppingListDiv.addEventListener('click', e => {
       if (e.target.classList.contains('delete-btn')) {
         const index = parseInt(e.target.dataset.index);
@@ -258,9 +369,14 @@
 
     addSuggestionForm.addEventListener('submit', e => {
       e.preventDefault();
-      addSuggestion(newSuggestionInput.value);
-      newSuggestionInput.value = ''; // Vide le champ après ajout
+      const newSugName = newSuggestionInput.value;
+      const sugCategory = suggestionCategorySelect.value;
+      addSuggestion(newSugName, sugCategory);
+      newSuggestionInput.value = '';
+      suggestionCategorySelect.value = ''; // Réinitialise la sélection de catégorie
     });
+
+    categoryFilterSelect.addEventListener('change', loadSuggestions); // Recharge les suggestions quand le filtre change
 
     // --- Initialisation au chargement de la page ---
     window.addEventListener('load', () => {
