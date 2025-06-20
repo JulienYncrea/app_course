@@ -60,6 +60,18 @@
         padding-right: 2.5em;
     }
 
+    /* Ancien style pour le conteneur de la liste d'achats, à supprimer si on veut le scroll de la page entière */
+    /*
+    #shoppingListContainer {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #4b5563;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin-top: 1rem;
+        background: #1f2937;
+    }
+    */
 
     /* Styles pour la liste d'achats */
     .shopping-list-item {
@@ -73,6 +85,13 @@
       font-size: 1.1rem;
       color: #f9fafb;
     }
+    /* Enlever la marge du premier item pour qu'il soit collé au haut du conteneur de défilement */
+    /* Ceci n'est plus nécessaire si #shoppingListContainer est retiré */
+    /*
+    #shoppingListContainer .shopping-list-item:first-child {
+        margin-top: 0;
+    }
+    */
     .shopping-list-item .delete-btn {
       background: none;
       border: none;
@@ -175,7 +194,8 @@
 
   <div class="section-container">
     <h2>Articles à acheter</h2>
-    <div id="shoppingList" style="margin-top: 1rem;">
+    {{-- Revenir à la structure précédente sans le conteneur de défilement interne --}}
+    <div id="shoppingList" style="margin-top: 1rem;"> 
       </div>
     <form id="shoppingForm" autocomplete="off">
         <label for="newItem">Ajouter un article :</label>
@@ -242,7 +262,7 @@
       shoppingListDiv.innerHTML = '';
 
       if (items.length === 0) {
-        shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af;">Votre liste est vide pour l\'instant !</p>';
+        shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af; margin-top: 0.5rem;">Votre liste est vide pour l\'instant !</p>';
       }
 
       items.forEach((item, index) => {
@@ -254,6 +274,12 @@
           <button class="delete-btn" data-index="${index}">✖</button>
         `;
         shoppingListDiv.appendChild(itemDiv);
+      });
+
+      // AJOUT ICI : Faire défiler la fenêtre vers le bas
+      window.scrollTo({
+        top: document.body.scrollHeight, // Défile jusqu'à la hauteur totale du document
+        behavior: 'smooth' // Pour un défilement doux
       });
     }
 
@@ -272,7 +298,7 @@
       }
 
       localStorage.setItem('shopping_list_items', JSON.stringify(items));
-      loadShoppingList();
+      loadShoppingList(); // Cela appellera le défilement
     }
 
     function deleteShoppingItem(index) {
@@ -300,7 +326,7 @@
           suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Aucune suggestion pour cette catégorie. Ajoutez-en ci-dessous !</p>';
       }
 
-      filteredSuggestions.forEach((suggestion) => { // Pas besoin d'index pour l'itération ici, on utilise findIndex pour delete
+      filteredSuggestions.forEach((suggestion) => {
         const suggestionDiv = document.createElement('div');
         suggestionDiv.className = 'suggestion-item';
         suggestionDiv.innerHTML = `
@@ -312,7 +338,6 @@
           addShoppingItem(suggestion.name); 
         });
 
-        // Utilisation des data-attributes name et category pour trouver l'élément à supprimer
         suggestionDiv.querySelector('.delete-suggestion-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             const nameToDelete = e.target.dataset.name;
@@ -338,17 +363,14 @@
       if (!suggestions.some(sug => sug.name.toLowerCase() === lowerCaseSuggestionName && sug.category === category)) {
           suggestions.push({ name: suggestionName.trim(), category: category.trim() });
           localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-          // loadSuggestions() est appelée ici pour rafraîchir l'affichage
           loadSuggestions(); 
       } else {
           alert(`"${suggestionName.trim()}" est déjà une suggestion dans la catégorie "${category}" !`);
       }
     }
 
-    // Cette fonction de suppression est maintenant par nom et catégorie
     function deleteSuggestion(name, category) {
         let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-        // Filtre pour créer un nouveau tableau sans l'élément à supprimer
         const updatedSuggestions = suggestions.filter(sug => !(sug.name === name && sug.category === category));
         localStorage.setItem('shopping_suggestions', JSON.stringify(updatedSuggestions));
         loadSuggestions();
@@ -374,7 +396,6 @@
       const newSugName = newSuggestionInput.value;
       const sugCategory = suggestionCategorySelect.value;
       
-      // Assurez-vous qu'une catégorie est sélectionnée
       if (!sugCategory) {
           alert("Veuillez sélectionner une catégorie pour la suggestion.");
           return;
@@ -382,7 +403,7 @@
 
       addSuggestion(newSugName, sugCategory);
       newSuggestionInput.value = '';
-      // NE PAS réinitialiser suggestionCategorySelect.value ici pour maintenir la sélection
+      // suggestionCategorySelect.value est MAINTENUE
     });
 
     categoryFilterSelect.addEventListener('change', loadSuggestions);
