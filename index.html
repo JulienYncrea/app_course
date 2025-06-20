@@ -60,19 +60,6 @@
         padding-right: 2.5em;
     }
 
-    /* Ancien style pour le conteneur de la liste d'achats, à supprimer si on veut le scroll de la page entière */
-    /*
-    #shoppingListContainer {
-        max-height: 300px;
-        overflow-y: auto;
-        border: 1px solid #4b5563;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        margin-top: 1rem;
-        background: #1f2937;
-    }
-    */
-
     /* Styles pour la liste d'achats */
     .shopping-list-item {
       display: flex;
@@ -85,13 +72,6 @@
       font-size: 1.1rem;
       color: #f9fafb;
     }
-    /* Enlever la marge du premier item pour qu'il soit collé au haut du conteneur de défilement */
-    /* Ceci n'est plus nécessaire si #shoppingListContainer est retiré */
-    /*
-    #shoppingListContainer .shopping-list-item:first-child {
-        margin-top: 0;
-    }
-    */
     .shopping-list-item .delete-btn {
       background: none;
       border: none;
@@ -194,7 +174,6 @@
 
   <div class="section-container">
     <h2>Articles à acheter</h2>
-    {{-- Revenir à la structure précédente sans le conteneur de défilement interne --}}
     <div id="shoppingList" style="margin-top: 1rem;"> 
       </div>
     <form id="shoppingForm" autocomplete="off">
@@ -276,11 +255,7 @@
         shoppingListDiv.appendChild(itemDiv);
       });
 
-      // AJOUT ICI : Faire défiler la fenêtre vers le bas
-      window.scrollTo({
-        top: document.body.scrollHeight, // Défile jusqu'à la hauteur totale du document
-        behavior: 'smooth' // Pour un défilement doux
-      });
+      // Le défilement vers le bas n'est PLUS ICI
     }
 
     function addShoppingItem(itemName) {
@@ -298,7 +273,15 @@
       }
 
       localStorage.setItem('shopping_list_items', JSON.stringify(items));
-      loadShoppingList(); // Cela appellera le défilement
+      
+      // Recharge la liste pour afficher les changements
+      loadShoppingList(); 
+
+      // AJOUT ICI : Faire défiler la fenêtre vers le bas UNIQUEMENT LORS DE L'AJOUT
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
     }
 
     function deleteShoppingItem(index) {
@@ -306,7 +289,7 @@
       if (index >= 0 && index < items.length) {
         items.splice(index, 1);
         localStorage.setItem('shopping_list_items', JSON.stringify(items));
-        loadShoppingList();
+        loadShoppingList(); // Recharge la liste, mais PAS de défilement ici
       }
     }
 
