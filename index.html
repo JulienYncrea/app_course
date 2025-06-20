@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CineBook 🎬</title>
+  <title>Ma Liste de Courses 🛒</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon.png" />
   <meta name="theme-color" content="#111827" />
@@ -18,7 +18,7 @@
       text-align: center;
       color: #fbbf24;
     }
-    form, .film-list, .controls {
+    .section-container {
       max-width: 600px;
       margin: 1rem auto;
       background: #374151;
@@ -29,7 +29,7 @@
       display: block;
       margin-top: 0.5rem;
     }
-    input, select, textarea, button {
+    input, button {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.2rem;
@@ -48,101 +48,72 @@
     button:hover {
       background: #d19e1a;
     }
-    .film {
+
+    /* Styles pour la liste d'achats */
+    .shopping-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: #111827;
       padding: 0.5rem 1rem;
       margin-top: 0.5rem;
       border-radius: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-    }
-    .film:hover {
-      background: #2563eb;
-    }
-    .film-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
-    .film-title {
-      font-weight: bold;
       font-size: 1.1rem;
-      flex-grow: 1;
+      color: #f9fafb;
     }
-    .film-date, .film-average {
-      font-size: 0.9rem;
-      color: #d1d5db;
-      white-space: nowrap;
-      margin-left: 0.8rem;
-    }
-    .film-details {
-      margin-top: 0.5rem;
-      background: #2563eb;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      color: #f3f4f6;
-      display: none;
-      font-size: 0.9rem;
-    }
-    .film-details p {
-      margin: 0.2rem 0;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-    .controls {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      background: #374151;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 0;
-    }
-    select {
-      max-width: 180px;
-    }
-    /* Boutons suppression et modification dans détails */
-    .btn-action {
-      background: #ef4444;
+    .shopping-list-item .delete-btn {
+      background: none;
       border: none;
-      color: white;
-      font-size: 1rem;
+      color: #ef4444;
+      font-size: 1.5rem;
       cursor: pointer;
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.3rem;
-      margin-top: 0.5rem;
-      user-select: none;
+      padding: 0 0.5rem;
+      margin: 0; /* Override default button margin */
+      width: auto; /* Override default button width */
+      transition: color 0.3s ease;
+    }
+    .shopping-list-item .delete-btn:hover {
+      color: #b91c1c;
+    }
+    .shopping-list-item span {
+        flex-grow: 1; /* Permet au texte de l'item de prendre de la place */
+        padding-right: 10px; /* Espace entre le texte et la croix */
+    }
+
+    /* Styles pour la liste des suggestions */
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .suggestion-item {
+      background: #2563eb;
+      color: #f3f4f6;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      cursor: pointer;
       transition: background-color 0.3s ease;
-      margin-right: 0.5rem; /* Ajout pour espacement */
+      user-select: none;
+      white-space: nowrap; /* Empêche le texte de se casser sur plusieurs lignes */
+      overflow: hidden; /* Cache le texte qui dépasse */
+      text-overflow: ellipsis; /* Ajoute des points de suspension si le texte est trop long */
     }
-    .btn-action:hover {
-      background: #b91c1c;
+    .suggestion-item:hover {
+      background: #1d4ed8;
     }
-    .btn-edit {
-        background: #3b82f6; /* Bleu pour modifier */
-    }
-    .btn-edit:hover {
-        background: #1d4ed8;
+
+    .add-suggestion-form {
+        margin-top: 1.5rem;
+        border-top: 1px solid #4b5563;
+        padding-top: 1rem;
     }
 
     @media (max-width: 640px) {
-      .film-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .film-date, .film-average {
-        margin-left: 0;
-      }
-      .controls {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      select {
-        max-width: 100%;
-      }
+        .suggestions-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
     }
   </style>
   <script>
@@ -156,221 +127,146 @@
   </script>
 </head>
 <body>
-  <h1>CineBook 🎬</h1>
-  <form id="filmForm" autocomplete="off">
-    <label for="title">Titre du film</label>
-    <input type="text" id="title" required />
+  <h1>Ma Liste de Courses 🛒</h1>
 
-    <label for="date">Date de visionnage</label>
-    <input type="date" id="date" />
-
-    <label for="global">Note globale (0-10) *</label>
-    <input type="number" id="global" min="0" max="10" required />
-
-    <label for="scenario">Scénario (0-10)</label>
-    <input type="number" id="scenario" min="0" max="10" />
-
-    <label for="musique">Musique (0-10)</label>
-    <input type="number" id="musique" min="0" max="10" />
-
-    <label for="visuel">Visuel (0-10)</label>
-    <input type="number" id="visuel" min="0" max="10" />
-
-    <label for="acteur">Acteurs (0-10)</label>
-    <input type="number" id="acteur" min="0" max="10" />
-
-    <label for="commentaire">Commentaire</label>
-    <textarea id="commentaire" placeholder="Votre avis sur le film..."></textarea>
-
-    <button type="submit" id="addUpdateBtn">Ajouter 🎥</button>
-  </form>
-
-  <div class="controls">
-    <label for="tri">Trier par :</label>
-    <select id="tri">
-      <option value="dateDesc" selected>Date (du plus récent)</option>
-      <option value="dateAsc">Date (du plus ancien)</option>
-      <option value="avgDesc">Note moyenne (la plus haute)</option>
-      <option value="avgAsc">Note moyenne (la plus basse)</option>
-    </select>
+  <div class="section-container">
+    <h2>Articles à acheter</h2>
+    <form id="shoppingForm" autocomplete="off">
+        <label for="newItem">Ajouter un article :</label>
+        <input type="text" id="newItem" placeholder="Ex: Lait, Pain, Pommes..." required />
+        <button type="submit">Ajouter à la liste ✅</button>
+    </form>
+    <div id="shoppingList" style="margin-top: 1rem;">
+      </div>
   </div>
 
-  <h2>🎞️ Films vus</h2>
-  <div class="film-list" id="filmList"></div>
+  <div class="section-container">
+    <h2>Ajouter des suggestions</h2>
+    <div id="suggestionsList" class="suggestions-grid">
+      </div>
+
+    <form id="addSuggestionForm" class="add-suggestion-form" autocomplete="off">
+        <label for="newSuggestion">Nouvelle suggestion :</label>
+        <input type="text" id="newSuggestion" placeholder="Ex: Fromage, Chocolat..." required />
+        <button type="submit">Ajouter comme suggestion ✨</button>
+    </form>
+  </div>
 
   <script>
-    const form = document.getElementById('filmForm');
-    const filmList = document.getElementById('filmList');
-    const triSelect = document.getElementById('tri');
-    const addUpdateBtn = document.getElementById('addUpdateBtn');
+    const shoppingForm = document.getElementById('shoppingForm');
+    const newItemInput = document.getElementById('newItem');
+    const shoppingListDiv = document.getElementById('shoppingList');
 
-    let editingIndex = -1; // Pour savoir si on est en mode modification ou ajout
+    const addSuggestionForm = document.getElementById('addSuggestionForm');
+    const newSuggestionInput = document.getElementById('newSuggestion');
+    const suggestionsListDiv = document.getElementById('suggestionsList');
 
-    // Charge films et trie selon la sélection
-    function chargerFilms() {
-      let films = JSON.parse(localStorage.getItem('cinebook_films')) || [];
+    // --- Fonctions de gestion de la liste d'achats ---
 
-      // Trie selon la sélection
-      const tri = triSelect.value;
-      films.sort((a, b) => {
-        if (tri === 'dateDesc') {
-          return new Date(b.date || '0000-01-01') - new Date(a.date || '0000-01-01');
-        } else if (tri === 'dateAsc') {
-          return new Date(a.date || '0000-01-01') - new Date(b.date || '0000-01-01');
-        } else if (tri === 'avgDesc') {
-          return moyenne(b) - moyenne(a);
-        } else if (tri === 'avgAsc') {
-          return moyenne(a) - moyenne(b);
-        }
-      });
+    function loadShoppingList() {
+      let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
+      shoppingListDiv.innerHTML = ''; // Vide la liste actuelle
 
-      filmList.innerHTML = '';
+      if (items.length === 0) {
+        shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af;">Votre liste est vide pour l\'instant !</p>';
+      }
 
-      films.forEach((film, index) => {
-        const div = document.createElement('div');
-        div.className = 'film';
-
-        const avgNote = moyenne(film).toFixed(2);
-
-        div.innerHTML = `
-          <div class="film-header">
-            <div class="film-title">${film.title}</div>
-            <div>
-              <span class="film-average">⭐ ${avgNote}</span>
-              <span class="film-date">${formatDate(film.date)}</span>
-            </div>
-          </div>
-          <div class="film-details">
-            <p><strong>Note globale :</strong> ${film.global !== undefined && film.global !== '' ? film.global + '/10' : 'N/A'}</p>
-            <p><strong>Scénario :</strong> ${film.scenario !== undefined && film.scenario !== '' ? film.scenario + '/10' : 'N/A'}</p>
-            <p><strong>Musique :</strong> ${film.musique !== undefined && film.musique !== '' ? film.musique + '/10' : 'N/A'}</p>
-            <p><strong>Visuel :</strong> ${film.visuel !== undefined && film.visuel !== '' ? film.visuel + '/10' : 'N/A'}</p>
-            <p><strong>Acteurs :</strong> ${film.acteur !== undefined && film.acteur !== '' ? film.acteur + '/10' : 'N/A'}</p>
-            <p><strong>Commentaire :</strong> ${film.commentaire || '(pas de commentaire)'}</p>
-            <button class="btn-action btn-edit" data-index="${index}" title="Modifier ce film">✏️ Modifier</button>
-            <button class="btn-action btn-delete" data-index="${index}" title="Supprimer ce film">🗑️ Supprimer</button>
-          </div>
+      items.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'shopping-list-item';
+        itemDiv.innerHTML = `
+          <span>${item}</span>
+          <button class="delete-btn" data-index="${index}">✖</button>
         `;
-
-        const header = div.querySelector('.film-header');
-        const details = div.querySelector('.film-details');
-        const btnDelete = div.querySelector('.btn-delete');
-        const btnEdit = div.querySelector('.btn-edit');
-
-        btnDelete.addEventListener('click', e => {
-          e.stopPropagation(); // empêcher toggle détails
-          const filmIndex = parseInt(e.target.dataset.index);
-          let films = JSON.parse(localStorage.getItem('cinebook_films')) || [];
-          if (confirm(`Supprimer "${films[filmIndex].title}" ?`)) {
-            films.splice(filmIndex, 1);
-            localStorage.setItem('cinebook_films', JSON.stringify(films));
-            chargerFilms();
-          }
-        });
-
-        btnEdit.addEventListener('click', e => {
-            e.stopPropagation();
-            const filmIndex = parseInt(e.target.dataset.index);
-            const films = JSON.parse(localStorage.getItem('cinebook_films')) || [];
-            const filmToEdit = films[filmIndex];
-
-            // Remplir le formulaire avec les données du film
-            form.title.value = filmToEdit.title;
-            form.date.value = filmToEdit.date;
-            form.global.value = filmToEdit.global;
-            form.scenario.value = filmToEdit.scenario;
-            form.musique.value = filmToEdit.musique;
-            form.visuel.value = filmToEdit.visuel;
-            form.acteur.value = filmToEdit.acteur;
-            form.commentaire.value = filmToEdit.commentaire;
-
-            addUpdateBtn.textContent = 'Modifier ✏️';
-            editingIndex = filmIndex; // Stocker l'index du film en cours de modification
-
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonter en haut de la page
-        });
-
-        header.addEventListener('click', () => {
-          const visible = details.style.display === 'block';
-
-          // Fermer tous les autres détails
-          document.querySelectorAll('.film-details').forEach(d => d.style.display = 'none');
-
-          details.style.display = visible ? 'none' : 'block';
-        });
-
-        filmList.appendChild(div);
+        shoppingListDiv.appendChild(itemDiv);
       });
     }
 
-    function moyenne(film) {
-      let totalNotes = 0;
-      let compteurNotes = 0;
+    function addShoppingItem(item) {
+      if (!item.trim()) return; // Ne pas ajouter d'éléments vides
 
-      const notes = ['global', 'scenario', 'musique', 'visuel', 'acteur'];
-
-      notes.forEach(noteType => {
-        const value = Number(film[noteType]);
-        if (!isNaN(value) && value >= 0 && value <= 10) {
-          totalNotes += value;
-          compteurNotes++;
-        }
-      });
-
-      return compteurNotes > 0 ? totalNotes / compteurNotes : 0;
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return 'N/A';
-      const d = new Date(dateStr);
-      // Pour éviter les décalages de fuseau horaire qui peuvent affecter la date affichée
-      const userTimezoneOffset = d.getTimezoneOffset() * 60000;
-      const adjustedDate = new Date(d.getTime() + userTimezoneOffset);
-      return adjustedDate.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
-    }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-
-      // Validation pour la note globale (obligatoire)
-      if (!form.global.value.trim() || isNaN(Number(form.global.value)) || Number(form.global.value) < 0 || Number(form.global.value) > 10) {
-        return alert('La note globale est obligatoire et doit être comprise entre 0 et 10.');
-      }
-      if (!form.title.value.trim()) return alert('Le titre est requis');
-
-
-      const film = {
-        title: form.title.value.trim(),
-        date: form.date.value,
-        global: form.global.value,
-        scenario: form.scenario.value,
-        musique: form.musique.value,
-        visuel: form.visuel.value,
-        acteur: form.acteur.value,
-        commentaire: form.commentaire.value.trim()
-      };
-
-      let films = JSON.parse(localStorage.getItem('cinebook_films')) || [];
-
-      if (editingIndex > -1) {
-        // Mode modification
-        films[editingIndex] = film;
-        editingIndex = -1; // Réinitialiser le mode modification
-        addUpdateBtn.textContent = 'Ajouter 🎥';
+      let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
+      // Éviter les doublons simples (insensible à la casse)
+      if (!items.some(existingItem => existingItem.toLowerCase() === item.toLowerCase())) {
+          items.push(item.trim());
+          localStorage.setItem('shopping_list_items', JSON.stringify(items));
+          loadShoppingList();
       } else {
-        // Mode ajout
-        films.push(film);
+          alert(`"${item}" est déjà dans votre liste d'achats !`);
+      }
+    }
+
+    function deleteShoppingItem(index) {
+      let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
+      if (index >= 0 && index < items.length) {
+        items.splice(index, 1);
+        localStorage.setItem('shopping_list_items', JSON.stringify(items));
+        loadShoppingList();
+      }
+    }
+
+    // --- Fonctions de gestion des suggestions ---
+
+    function loadSuggestions() {
+      let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+      suggestionsListDiv.innerHTML = ''; // Vide la liste actuelle
+
+      if (suggestions.length === 0) {
+          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Ajoutez vos premières suggestions ci-dessous !</p>';
       }
 
-      localStorage.setItem('cinebook_films', JSON.stringify(films));
+      suggestions.forEach(suggestion => {
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.className = 'suggestion-item';
+        suggestionDiv.textContent = suggestion;
+        suggestionDiv.addEventListener('click', () => {
+          addShoppingItem(suggestion); // Ajoute la suggestion à la liste d'achats
+        });
+        suggestionsListDiv.appendChild(suggestionDiv);
+      });
+    }
 
-      form.reset();
-      chargerFilms();
+    function addSuggestion(suggestion) {
+      if (!suggestion.trim()) return; // Ne pas ajouter de suggestions vides
+
+      let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+      // Éviter les doublons (insensible à la casse)
+      if (!suggestions.some(existingSuggestion => existingSuggestion.toLowerCase() === suggestion.toLowerCase())) {
+          suggestions.push(suggestion.trim());
+          localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
+          loadSuggestions();
+      } else {
+          alert(`"${suggestion}" est déjà une suggestion !`);
+      }
+    }
+
+    // --- Gestionnaires d'événements ---
+
+    shoppingForm.addEventListener('submit', e => {
+      e.preventDefault();
+      addShoppingItem(newItemInput.value);
+      newItemInput.value = ''; // Vide le champ après ajout
     });
 
-    triSelect.addEventListener('change', chargerFilms);
+    // Utilise la délégation d'événements pour le bouton de suppression
+    shoppingListDiv.addEventListener('click', e => {
+      if (e.target.classList.contains('delete-btn')) {
+        const index = parseInt(e.target.dataset.index);
+        deleteShoppingItem(index);
+      }
+    });
 
-    window.addEventListener('load', chargerFilms);
+    addSuggestionForm.addEventListener('submit', e => {
+      e.preventDefault();
+      addSuggestion(newSuggestionInput.value);
+      newSuggestionInput.value = ''; // Vide le champ après ajout
+    });
+
+    // --- Initialisation au chargement de la page ---
+    window.addEventListener('load', () => {
+      loadShoppingList();
+      loadSuggestions();
+    });
   </script>
 </body>
 </html>
