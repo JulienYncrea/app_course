@@ -29,14 +29,14 @@
       display: block;
       margin-top: 0.5rem;
     }
-    input, button, select { /* Ajout de select ici */
+    input, button, select {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.2rem;
       border: none;
       border-radius: 0.25rem;
       box-sizing: border-box;
-      color: #1f2937; /* Couleur de texte pour les inputs et selects */
+      color: #1f2937;
     }
     button {
       background: #fbbf24;
@@ -49,15 +49,15 @@
       background: #d19e1a;
     }
     select {
-        background: #f9fafb; /* Fond clair pour le select */
-        appearance: none; /* Supprime le style par défaut du navigateur */
+        background: #f9fafb;
+        appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='%231f2937' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); /* Flèche personnalisée */
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%231f2937' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
         background-repeat: no-repeat;
         background-position: right 0.7em top 50%;
         background-size: 0.65em auto;
-        padding-right: 2.5em; /* Espace pour la flèche */
+        padding-right: 2.5em;
     }
 
 
@@ -190,6 +190,8 @@
         <label for="categoryFilter">Filtrer par catégorie :</label>
         <select id="categoryFilter">
             <option value="Toutes">Toutes les catégories</option>
+            <option value="Petit déjeuner">Petit déjeuner</option>
+            <option value="Boisson">Boisson</option>
             <option value="Viande">Viande</option>
             <option value="Fruit">Fruit</option>
             <option value="Légume">Légume</option>
@@ -208,6 +210,8 @@
         <label for="suggestionCategory">Catégorie :</label>
         <select id="suggestionCategory" required>
             <option value="">Choisir une catégorie</option>
+            <option value="Petit déjeuner">Petit déjeuner</option>
+            <option value="Boisson">Boisson</option>
             <option value="Viande">Viande</option>
             <option value="Fruit">Fruit</option>
             <option value="Légume">Légume</option>
@@ -227,9 +231,9 @@
 
     const addSuggestionForm = document.getElementById('addSuggestionForm');
     const newSuggestionInput = document.getElementById('newSuggestion');
-    const suggestionCategorySelect = document.getElementById('suggestionCategory'); // Nouveau select pour ajouter une suggestion
+    const suggestionCategorySelect = document.getElementById('suggestionCategory');
     const suggestionsListDiv = document.getElementById('suggestionsList');
-    const categoryFilterSelect = document.getElementById('categoryFilter'); // Nouveau select pour filtrer les suggestions
+    const categoryFilterSelect = document.getElementById('categoryFilter');
 
     // --- Fonctions de gestion de la liste d'achats ---
 
@@ -288,7 +292,6 @@
 
       const selectedCategory = categoryFilterSelect.value;
       
-      // Filtrer les suggestions si une catégorie spécifique est sélectionnée
       const filteredSuggestions = selectedCategory === 'Toutes' 
         ? allSuggestions 
         : allSuggestions.filter(sug => sug.category === selectedCategory);
@@ -297,26 +300,25 @@
           suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Aucune suggestion pour cette catégorie. Ajoutez-en ci-dessous !</p>';
       }
 
-      filteredSuggestions.forEach((suggestion, index) => {
-        // Trouvez l'index original de la suggestion dans la liste non filtrée
-        // pour que la suppression fonctionne correctement.
-        const originalIndex = allSuggestions.findIndex(s => s.name === suggestion.name && s.category === suggestion.category);
-
+      filteredSuggestions.forEach((suggestion) => { // Pas besoin d'index pour l'itération ici, on utilise findIndex pour delete
         const suggestionDiv = document.createElement('div');
         suggestionDiv.className = 'suggestion-item';
         suggestionDiv.innerHTML = `
             <span class="suggestion-item-text">${suggestion.name}</span>
-            <button class="delete-suggestion-btn" data-index="${originalIndex}">✖</button>
+            <button class="delete-suggestion-btn" data-name="${suggestion.name}" data-category="${suggestion.category}">✖</button>
         `;
         
         suggestionDiv.querySelector('.suggestion-item-text').addEventListener('click', () => {
           addShoppingItem(suggestion.name); 
         });
 
+        // Utilisation des data-attributes name et category pour trouver l'élément à supprimer
         suggestionDiv.querySelector('.delete-suggestion-btn').addEventListener('click', (e) => {
             e.stopPropagation();
-            if (confirm(`Supprimer la suggestion "${suggestion.name}" (${suggestion.category}) ?`)) {
-                deleteSuggestion(originalIndex);
+            const nameToDelete = e.target.dataset.name;
+            const categoryToDelete = e.target.dataset.category;
+            if (confirm(`Supprimer la suggestion "${nameToDelete}" (${categoryToDelete}) ?`)) {
+                deleteSuggestion(nameToDelete, categoryToDelete);
             }
         });
 
@@ -333,23 +335,23 @@
       let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
       const lowerCaseSuggestionName = suggestionName.trim().toLowerCase();
 
-      // Éviter les doublons (même nom et même catégorie)
       if (!suggestions.some(sug => sug.name.toLowerCase() === lowerCaseSuggestionName && sug.category === category)) {
           suggestions.push({ name: suggestionName.trim(), category: category.trim() });
           localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-          loadSuggestions(); // Recharge les suggestions avec le filtre actuel
+          // loadSuggestions() est appelée ici pour rafraîchir l'affichage
+          loadSuggestions(); 
       } else {
           alert(`"${suggestionName.trim()}" est déjà une suggestion dans la catégorie "${category}" !`);
       }
     }
 
-    function deleteSuggestion(index) {
+    // Cette fonction de suppression est maintenant par nom et catégorie
+    function deleteSuggestion(name, category) {
         let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-        if (index >= 0 && index < suggestions.length) {
-            suggestions.splice(index, 1);
-            localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-            loadSuggestions(); // Recharge les suggestions avec le filtre actuel
-        }
+        // Filtre pour créer un nouveau tableau sans l'élément à supprimer
+        const updatedSuggestions = suggestions.filter(sug => !(sug.name === name && sug.category === category));
+        localStorage.setItem('shopping_suggestions', JSON.stringify(updatedSuggestions));
+        loadSuggestions();
     }
 
     // --- Gestionnaires d'événements ---
@@ -371,12 +373,19 @@
       e.preventDefault();
       const newSugName = newSuggestionInput.value;
       const sugCategory = suggestionCategorySelect.value;
+      
+      // Assurez-vous qu'une catégorie est sélectionnée
+      if (!sugCategory) {
+          alert("Veuillez sélectionner une catégorie pour la suggestion.");
+          return;
+      }
+
       addSuggestion(newSugName, sugCategory);
       newSuggestionInput.value = '';
-      suggestionCategorySelect.value = ''; // Réinitialise la sélection de catégorie
+      // NE PAS réinitialiser suggestionCategorySelect.value ici pour maintenir la sélection
     });
 
-    categoryFilterSelect.addEventListener('change', loadSuggestions); // Recharge les suggestions quand le filtre change
+    categoryFilterSelect.addEventListener('change', loadSuggestions);
 
     // --- Initialisation au chargement de la page ---
     window.addEventListener('load', () => {
