@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ma Liste de Courses 🛒</title>
+  <title>My Shopping List 🛒</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon.png" />
   <meta name="theme-color" content="#FFC0CB" /> <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police plus douce */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0; padding: 1rem;
-      background: linear-gradient(to bottom right, #FAD0C4, #FFD1DC); /* Dégradé doux */
-      color: #333; /* Texte plus sombre pour le contraste */
+      background: linear-gradient(to bottom right, #FAD0C4, #FFD1DC);
+      color: #333;
     }
     h1, h2 {
       text-align: center;
-      color: #E75480; /* Rose vif */
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Petite ombre pour la profondeur */
+      color: #E75480;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     .section-container {
       max-width: 600px;
       margin: 1rem auto;
-      background: #FFFFFF; /* Fond blanc pur pour la lisibilité */
-      padding: 1.5rem; /* Augmenter un peu le padding */
-      border-radius: 1rem; /* Bords plus arrondis */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre plus douce */
+      background: #FFFFFF;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       display: none; 
     }
     .section-container.active {
@@ -32,96 +32,96 @@
     }
     label {
       display: block;
-      margin-top: 0.75rem; /* Espacement ajusté */
+      margin-top: 0.75rem;
       font-weight: bold;
-      color: #6A057F; /* Violet foncé */
+      color: #6A057F;
     }
     input, button, select {
       width: 100%;
-      padding: 0.7rem; /* Augmenter le padding */
-      margin-top: 0.4rem; /* Espacement ajusté */
-      border: 1px solid #DDA0DD; /* Bordure violette claire */
-      border-radius: 0.5rem; /* Bords plus arrondis */
+      padding: 0.7rem;
+      margin-top: 0.4rem;
+      border: 1px solid #DDA0DD;
+      border-radius: 0.5rem;
       box-sizing: border-box;
       color: #333;
       font-size: 1rem;
     }
     button {
-      background: #FF69B4; /* Rose bonbon */
-      color: #FFFFFF; /* Texte blanc */
+      background: #FF69B4;
+      color: #FFFFFF;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease; /* Transition plus globale */
-      border: none; /* Pas de bordure par défaut */
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ombre légère pour les boutons */
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     button:hover {
-      background: #C71585; /* Rose plus foncé au survol */
-      transform: translateY(-2px); /* Léger soulèvement */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Ombre plus prononcée */
+      background: #C71585;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     select {
-        background: #F8F8FF; /* Fond lavande très clair */
+        background: #F8F8FF;
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='%23C71585' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); /* Flèche rose */
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%23C71585' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
         background-repeat: no-repeat;
         background-position: right 0.7em top 50%;
         background-size: 0.65em auto;
         padding-right: 2.5em;
     }
 
-    /* Styles pour les boutons de navigation */
+    /* Styles for navigation buttons */
     .navigation-buttons {
         text-align: center;
-        margin-bottom: 2rem; /* Plus d'espace */
+        margin-bottom: 2rem;
         display: flex;
         justify-content: center;
-        gap: 1.5rem; /* Espacement accru */
+        gap: 1.5rem;
     }
     .navigation-buttons button {
-        width: auto; 
-        padding: 0.8rem 1.8rem; /* Padding plus généreux */
-        font-size: 1.1rem; /* Texte plus grand */
-        background-color: #EE82EE; /* Violet moyen par défaut */
+        width: auto;
+        padding: 0.8rem 1.8rem;
+        font-size: 1.1rem;
+        background-color: #EE82EE;
         color: #FFFFFF;
-        border: 2px solid #DA70D6; /* Bordure assortie */
-        border-radius: 25px; /* Forme pilule */
+        border: 2px solid #DA70D6;
+        border-radius: 25px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .navigation-buttons button.active {
-        background: #FFD700; /* Or vif pour l'actif */
-        color: #6A057F; /* Texte violet foncé sur or */
-        border-color: #FFA500; /* Bordure orange doré */
+        background: #FFD700;
+        color: #6A057F;
+        border-color: #FFA500;
         font-weight: bold;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .navigation-buttons button:hover:not(.active) {
-        background-color: #DDA0DD; /* Violet plus clair au survol */
+        background-color: #DDA0DD;
         border-color: #BA55D3;
     }
 
-    /* Styles pour la liste d'achats */
+    /* Styles for the shopping list */
     .shopping-list-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #FFF0F5; /* Rose pâle */
-      padding: 0.7rem 1.2rem; /* Padding généreux */
-      margin-top: 0.7rem; /* Espacement ajusté */
-      border-radius: 0.75rem; /* Bords très arrondis */
+      background: #FFF0F5;
+      padding: 0.7rem 1.2rem;
+      margin-top: 0.7rem;
+      border-radius: 0.75rem;
       font-size: 1.1rem;
-      color: #6A057F; /* Texte violet foncé */
-      border: 1px solid #FFC0CB; /* Bordure rose claire */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Ombre très légère */
+      color: #6A057F;
+      border: 1px solid #FFC0CB;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .shopping-list-item .delete-btn {
       background: none;
       border: none;
-      color: #FF6347; /* Rouge tomate pour le bouton de suppression */
-      font-size: 1.6rem; /* Plus grand */
+      color: #FF6347;
+      font-size: 1.6rem;
       cursor: pointer;
       padding: 0 0.5rem;
       margin: 0;
@@ -129,7 +129,7 @@
       transition: color 0.3s ease;
     }
     .shopping-list-item .delete-btn:hover {
-      color: #DC143C; /* Rouge cramoisi au survol */
+      color: #DC143C;
     }
     .shopping-list-item span {
         flex-grow: 1;
@@ -138,22 +138,22 @@
     .quantity {
         font-weight: bold;
         margin-right: 8px;
-        color: #FF8C00; /* Orange foncé pour la quantité */
+        color: #FF8C00;
     }
 
-    /* Styles pour la liste des suggestions */
+    /* Styles for the suggestions list */
     .suggestions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Taille min un peu plus grande */
-      gap: 0.7rem; /* Espacement accru */
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.7rem;
       margin-top: 1.5rem;
     }
     .suggestion-item {
       position: relative;
-      background: #9370DB; /* Violet moyen */
-      color: #FFFFFF; /* Texte blanc */
+      background: #9370DB;
+      color: #FFFFFF;
       padding: 0.6rem 1rem;
-      border-radius: 0.75rem; /* Bords très arrondis */
+      border-radius: 0.75rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -168,7 +168,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .suggestion-item:hover {
-      background: #8A2BE2; /* Violet plus intense au survol */
+      background: #8A2BE2;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
@@ -180,7 +180,7 @@
     .delete-suggestion-btn {
       background: none;
       border: none;
-      color: #FFD700; /* Or pour le bouton de suppression de suggestion */
+      color: #FFD700;
       font-size: 1.3rem;
       cursor: pointer;
       padding: 0 0.2rem;
@@ -190,21 +190,21 @@
       line-height: 1;
     }
     .delete-suggestion-btn:hover {
-      color: #FF4500; /* Orange rouge au survol */
+      color: #FF4500;
     }
 
     .add-suggestion-form {
-        margin-top: 2rem; /* Plus d'espace */
-        border-top: 1px solid #DDA0DD; /* Bordure rose claire */
+        margin-top: 2rem;
+        border-top: 1px solid #DDA0DD;
         padding-top: 1.5rem;
     }
     .filter-controls {
         margin-bottom: 1.5rem;
     }
 
-    /* Style pour le texte de liste vide */
+    /* Style for empty list text */
     p[style*="text-align: center"] {
-        color: #C71585 !important; /* Rose foncé pour le texte vide */
+        color: #C71585 !important;
         font-style: italic;
         font-size: 0.95rem;
     }
@@ -223,68 +223,68 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker enregistré:', reg.scope))
-          .catch(err => console.error('Erreur SW:', err));
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.error('SW error:', err));
       });
     }
   </script>
 </head>
 <body>
-  <h1>Ma Liste de Courses 🛒</h1>
+  <h1>My Shopping List 🛒</h1>
 
   <div class="navigation-buttons">
-    <button id="showShoppingListBtn" class="active">Ma Liste</button>
+    <button id="showShoppingListBtn" class="active">My List</button>
     <button id="showSuggestionsBtn">Suggestions</button>
   </div>
 
   <div id="shoppingListSection" class="section-container active">
-    <h2>Articles à acheter</h2>
+    <h2>Items to Buy</h2>
     <div id="shoppingList" style="margin-top: 1rem;"> 
       </div>
     <form id="shoppingForm" autocomplete="off">
-        <label for="newItem">Ajouter un article :</label>
-        <input type="text" id="newItem" placeholder="Ex: Lait, Pain, Pommes..." required />
-        <button type="submit">Ajouter à la liste ✅</button>
+        <label for="newItem">Add an item:</label>
+        <input type="text" id="newItem" placeholder="Ex: Milk, Bread, Apples..." required />
+        <button type="submit">Add to List ✅</button>
     </form>
   </div>
 
   <div id="suggestionsSection" class="section-container">
-    <h2>Suggestions par catégorie</h2>
+    <h2>Suggestions by Category</h2>
     <div class="filter-controls">
-        <label for="categoryFilter">Filtrer par catégorie :</label>
+        <label for="categoryFilter">Filter by category:</label>
         <select id="categoryFilter">
-            <option value="Toutes">Toutes les catégories</option>
-            <option value="Petit déjeuner">Petit déjeuner</option>
-            <option value="Boisson">Boisson</option>
-            <option value="Viande">Viande</option>
+            <option value="All">All Categories</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Beverage">Beverage</option>
+            <option value="Meat">Meat</option>
             <option value="Fruit">Fruit</option>
-            <option value="Légume">Légume</option>
-            <option value="Produit ménager">Produit ménager</option>
-            <option value="Produit de beauté">Produit de beauté</option>
-            <option value="Autre">Autre</option>
+            <option value="Vegetable">Vegetable</option>
+            <option value="Household Product">Household Product</option>
+            <option value="Beauty Product">Beauty Product</option>
+            <option value="Other">Other</option>
         </select>
     </div>
     <div id="suggestionsList" class="suggestions-grid">
       </div>
 
     <form id="addSuggestionForm" class="add-suggestion-form" autocomplete="off">
-        <label for="newSuggestion">Nouvelle suggestion :</label>
-        <input type="text" id="newSuggestion" placeholder="Ex: Fromage, Chocolat..." required />
+        <label for="newSuggestion">New suggestion:</label>
+        <input type="text" id="newSuggestion" placeholder="Ex: Cheese, Chocolate..." required />
         
-        <label for="suggestionCategory">Catégorie :</label>
+        <label for="suggestionCategory">Category:</label>
         <select id="suggestionCategory" required>
-            <option value="">Choisir une catégorie</option>
-            <option value="Petit déjeuner">Petit déjeuner</option>
-            <option value="Boisson">Boisson</option>
-            <option value="Viande">Viande</option>
+            <option value="">Choose a category</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Beverage">Beverage</option>
+            <option value="Meat">Meat</option>
             <option value="Fruit">Fruit</option>
-            <option value="Légume">Légume</option>
-            <option value="Produit ménager">Produit ménager</option>
-            <option value="Produit de beauté">Produit de beauté</option>
-            <option value="Autre">Autre</option>
+            <option value="Vegetable">Vegetable</option>
+            <option value="Household Product">Household Product</option>
+            <option value="Beauty Product">Beauty Product</option>
+            <option value="Other">Other</option>
         </select>
         
-        <button type="submit">Ajouter comme suggestion ✨</button>
+        <button type="submit">Add as suggestion ✨</button>
     </form>
   </div>
 
@@ -299,20 +299,20 @@
     const suggestionsListDiv = document.getElementById('suggestionsList');
     const categoryFilterSelect = document.getElementById('categoryFilter');
 
-    // Nouveaux éléments pour la navigation
+    // New elements for navigation
     const showShoppingListBtn = document.getElementById('showShoppingListBtn');
     const showSuggestionsBtn = document.getElementById('showSuggestionsBtn');
     const shoppingListSection = document.getElementById('shoppingListSection');
     const suggestionsSection = document.getElementById('suggestionsSection');
 
-    // --- Fonctions de gestion de la liste d'achats ---
+    // --- Shopping list management functions ---
 
     function loadShoppingList() {
       let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
       shoppingListDiv.innerHTML = '';
 
       if (items.length === 0) {
-        shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af; margin-top: 0.5rem;">Votre liste est vide pour l\'instant !</p>';
+        shoppingListDiv.innerHTML = '<p style="text-align: center; color: #9ca3af; margin-top: 0.5rem;">Your list is empty for now!</p>';
       }
 
       items.forEach((item, index) => {
@@ -355,7 +355,7 @@
       }
     }
 
-    // --- Fonctions de gestion des suggestions ---
+    // --- Suggestions management functions ---
 
     function loadSuggestions() {
       let allSuggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
@@ -363,12 +363,12 @@
 
       const selectedCategory = categoryFilterSelect.value;
       
-      const filteredSuggestions = selectedCategory === 'Toutes' 
+      const filteredSuggestions = selectedCategory === 'All' 
         ? allSuggestions 
         : allSuggestions.filter(sug => sug.category === selectedCategory);
 
       if (filteredSuggestions.length === 0) {
-          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">Aucune suggestion pour cette catégorie. Ajoutez-en ci-dessous !</p>';
+          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #9ca3af;">No suggestions for this category. Add some below!</p>';
       }
 
       filteredSuggestions.forEach((suggestion) => {
@@ -387,7 +387,7 @@
             e.stopPropagation();
             const nameToDelete = e.target.dataset.name;
             const categoryToDelete = e.target.dataset.category;
-            if (confirm(`Supprimer la suggestion "${nameToDelete}" (${categoryToDelete}) ?`)) {
+            if (confirm(`Delete suggestion "${nameToDelete}" (${categoryToDelete})?`)) {
                 deleteSuggestion(nameToDelete, categoryToDelete);
             }
         });
@@ -398,7 +398,7 @@
 
     function addSuggestion(suggestionName, category) {
       if (!suggestionName.trim() || !category.trim()) {
-        alert('Veuillez entrer un nom de suggestion ET choisir une catégorie.');
+        alert('Please enter a suggestion name AND choose a category.');
         return;
       }
 
@@ -410,7 +410,7 @@
           localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
           loadSuggestions(); 
       } else {
-          alert(`"${suggestionName.trim()}" est déjà une suggestion dans la catégorie "${category}" !`);
+          alert(`"${suggestionName.trim()}" is already a suggestion in the "${category}" category!`);
       }
     }
 
@@ -421,17 +421,17 @@
         loadSuggestions();
     }
 
-    // --- Fonctions de navigation entre les sections ---
+    // --- Section navigation functions ---
     function showSection(sectionToShow) {
-        // Masque toutes les sections
+        // Hide all sections
         shoppingListSection.classList.remove('active');
         suggestionsSection.classList.remove('active');
 
-        // Retire la classe 'active' de tous les boutons de navigation
+        // Remove 'active' class from all navigation buttons
         showShoppingListBtn.classList.remove('active');
         showSuggestionsBtn.classList.remove('active');
 
-        // Affiche la section désirée et met à jour le bouton actif
+        // Show the desired section and update the active button
         if (sectionToShow === 'shoppingList') {
             shoppingListSection.classList.add('active');
             showShoppingListBtn.classList.add('active');
@@ -441,7 +441,7 @@
         }
     }
 
-    // --- Gestionnaires d'événements ---
+    // --- Event handlers ---
 
     shoppingForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -462,7 +462,7 @@
       const sugCategory = suggestionCategorySelect.value;
       
       if (!sugCategory) {
-          alert("Veuillez sélectionner une catégorie pour la suggestion.");
+          alert("Please select a category for the suggestion.");
           return;
       }
 
@@ -472,15 +472,15 @@
 
     categoryFilterSelect.addEventListener('change', loadSuggestions);
 
-    // Gestionnaires d'événements pour les boutons de navigation
+    // Event handlers for navigation buttons
     showShoppingListBtn.addEventListener('click', () => showSection('shoppingList'));
     showSuggestionsBtn.addEventListener('click', () => showSection('suggestions'));
 
-    // --- Initialisation au chargement de la page ---
+    // --- Initialization on page load ---
     window.addEventListener('load', () => {
       loadShoppingList();
       loadSuggestions();
-      // Afficher la liste de courses par défaut au chargement
+      // Show shopping list by default on load
       showSection('shoppingList'); 
     });
   </script>
