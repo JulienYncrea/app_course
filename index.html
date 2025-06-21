@@ -6,60 +6,66 @@
   <title>Ma Liste de Courses 🛒</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <meta name="theme-color" content="#111827" />
-  <style>
+  <meta name="theme-color" content="#FFC0CB" /> <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police plus douce */
       margin: 0; padding: 1rem;
-      background: #1f2937;
-      color: #f9fafb;
+      background: linear-gradient(to bottom right, #FAD0C4, #FFD1DC); /* Dégradé doux */
+      color: #333; /* Texte plus sombre pour le contraste */
     }
     h1, h2 {
       text-align: center;
-      color: #fbbf24;
+      color: #E75480; /* Rose vif */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Petite ombre pour la profondeur */
     }
     .section-container {
       max-width: 600px;
       margin: 1rem auto;
-      background: #374151;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      /* Masqué par défaut, JavaScript gérera l'affichage */
+      background: #FFFFFF; /* Fond blanc pur pour la lisibilité */
+      padding: 1.5rem; /* Augmenter un peu le padding */
+      border-radius: 1rem; /* Bords plus arrondis */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre plus douce */
       display: none; 
     }
-    /* Style pour la section active */
     .section-container.active {
         display: block;
     }
     label {
       display: block;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem; /* Espacement ajusté */
+      font-weight: bold;
+      color: #6A057F; /* Violet foncé */
     }
     input, button, select {
       width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.2rem;
-      border: none;
-      border-radius: 0.25rem;
+      padding: 0.7rem; /* Augmenter le padding */
+      margin-top: 0.4rem; /* Espacement ajusté */
+      border: 1px solid #DDA0DD; /* Bordure violette claire */
+      border-radius: 0.5rem; /* Bords plus arrondis */
       box-sizing: border-box;
-      color: #1f2937;
+      color: #333;
+      font-size: 1rem;
     }
     button {
-      background: #fbbf24;
-      color: #1f2937;
+      background: #FF69B4; /* Rose bonbon */
+      color: #FFFFFF; /* Texte blanc */
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease; /* Transition plus globale */
+      border: none; /* Pas de bordure par défaut */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ombre légère pour les boutons */
     }
     button:hover {
-      background: #d19e1a;
+      background: #C71585; /* Rose plus foncé au survol */
+      transform: translateY(-2px); /* Léger soulèvement */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Ombre plus prononcée */
     }
     select {
-        background: #f9fafb;
+        background: #F8F8FF; /* Fond lavande très clair */
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='%231f2937' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%23C71585' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); /* Flèche rose */
         background-repeat: no-repeat;
         background-position: right 0.7em top 50%;
         background-size: 0.65em auto;
@@ -69,27 +75,32 @@
     /* Styles pour les boutons de navigation */
     .navigation-buttons {
         text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem; /* Plus d'espace */
         display: flex;
         justify-content: center;
-        gap: 1rem; /* Espacement entre les boutons */
+        gap: 1.5rem; /* Espacement accru */
     }
     .navigation-buttons button {
-        width: auto; /* Les boutons s'adaptent à leur contenu */
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        background-color: #4b5563; /* Couleur par défaut */
-        color: #f9fafb;
-        border: 2px solid #4b5563;
+        width: auto; 
+        padding: 0.8rem 1.8rem; /* Padding plus généreux */
+        font-size: 1.1rem; /* Texte plus grand */
+        background-color: #EE82EE; /* Violet moyen par défaut */
+        color: #FFFFFF;
+        border: 2px solid #DA70D6; /* Bordure assortie */
+        border-radius: 25px; /* Forme pilule */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .navigation-buttons button.active {
-        background: #fbbf24; /* Couleur active */
-        color: #1f2937;
-        border-color: #fbbf24;
+        background: #FFD700; /* Or vif pour l'actif */
+        color: #6A057F; /* Texte violet foncé sur or */
+        border-color: #FFA500; /* Bordure orange doré */
+        font-weight: bold;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .navigation-buttons button:hover:not(.active) {
-        background-color: #6b7280;
-        border-color: #6b7280;
+        background-color: #DDA0DD; /* Violet plus clair au survol */
+        border-color: #BA55D3;
     }
 
     /* Styles pour la liste d'achats */
@@ -97,18 +108,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #111827;
-      padding: 0.5rem 1rem;
-      margin-top: 0.5rem;
-      border-radius: 0.5rem;
+      background: #FFF0F5; /* Rose pâle */
+      padding: 0.7rem 1.2rem; /* Padding généreux */
+      margin-top: 0.7rem; /* Espacement ajusté */
+      border-radius: 0.75rem; /* Bords très arrondis */
       font-size: 1.1rem;
-      color: #f9fafb;
+      color: #6A057F; /* Texte violet foncé */
+      border: 1px solid #FFC0CB; /* Bordure rose claire */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Ombre très légère */
     }
     .shopping-list-item .delete-btn {
       background: none;
       border: none;
-      color: #ef4444;
-      font-size: 1.5rem;
+      color: #FF6347; /* Rouge tomate pour le bouton de suppression */
+      font-size: 1.6rem; /* Plus grand */
       cursor: pointer;
       padding: 0 0.5rem;
       margin: 0;
@@ -116,7 +129,7 @@
       transition: color 0.3s ease;
     }
     .shopping-list-item .delete-btn:hover {
-      color: #b91c1c;
+      color: #DC143C; /* Rouge cramoisi au survol */
     }
     .shopping-list-item span {
         flex-grow: 1;
@@ -125,25 +138,25 @@
     .quantity {
         font-weight: bold;
         margin-right: 8px;
-        color: #fbbf24;
+        color: #FF8C00; /* Orange foncé pour la quantité */
     }
 
     /* Styles pour la liste des suggestions */
     .suggestions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 0.5rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Taille min un peu plus grande */
+      gap: 0.7rem; /* Espacement accru */
+      margin-top: 1.5rem;
     }
     .suggestion-item {
       position: relative;
-      background: #2563eb;
-      color: #f3f4f6;
-      padding: 0.5rem 1rem;
-      border-radius: 0.25rem;
+      background: #9370DB; /* Violet moyen */
+      color: #FFFFFF; /* Texte blanc */
+      padding: 0.6rem 1rem;
+      border-radius: 0.75rem; /* Bords très arrondis */
       text-align: center;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
       user-select: none;
       white-space: nowrap;
       overflow: hidden;
@@ -152,19 +165,23 @@
       justify-content: space-between;
       align-items: center;
       padding-right: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .suggestion-item:hover {
-      background: #1d4ed8;
+      background: #8A2BE2; /* Violet plus intense au survol */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .suggestion-item-text {
         flex-grow: 1;
         padding-right: 5px;
+        font-weight: 500;
     }
     .delete-suggestion-btn {
       background: none;
       border: none;
-      color: #f3f4f6;
-      font-size: 1.2rem;
+      color: #FFD700; /* Or pour le bouton de suppression de suggestion */
+      font-size: 1.3rem;
       cursor: pointer;
       padding: 0 0.2rem;
       margin: 0;
@@ -173,21 +190,32 @@
       line-height: 1;
     }
     .delete-suggestion-btn:hover {
-      color: #ef4444;
+      color: #FF4500; /* Orange rouge au survol */
     }
 
     .add-suggestion-form {
-        margin-top: 1.5rem;
-        border-top: 1px solid #4b5563;
-        padding-top: 1rem;
+        margin-top: 2rem; /* Plus d'espace */
+        border-top: 1px solid #DDA0DD; /* Bordure rose claire */
+        padding-top: 1.5rem;
     }
     .filter-controls {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Style pour le texte de liste vide */
+    p[style*="text-align: center"] {
+        color: #C71585 !important; /* Rose foncé pour le texte vide */
+        font-style: italic;
+        font-size: 0.95rem;
     }
 
     @media (max-width: 640px) {
         .suggestions-grid {
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        }
+        .navigation-buttons button {
+          padding: 0.6rem 1rem;
+          font-size: 0.9rem;
         }
     }
   </style>
