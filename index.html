@@ -80,7 +80,7 @@
         display: flex;
         justify-content: center;
         gap: 1.5rem;
-        flex-wrap: wrap; /* Permet aux boutons de passer à la ligne sur petits écrans */
+        flex-wrap: wrap;
     }
     .navigation-buttons button {
         width: auto;
@@ -195,10 +195,10 @@
       color: #FF4500;
     }
 
-    .add-suggestion-form {
-        margin-top: 2rem;
+    .add-form { /* General style for add forms */
+        margin-top: 1.5rem;
         border-top: 1px solid #DDA0DD;
-        padding-top: 1.5rem;
+        padding-top: 1rem;
     }
     .filter-controls {
         margin-bottom: 1.5rem;
@@ -212,11 +212,11 @@
     }
 
     /* Category order list styles */
-    #categoryOrderList {
+    #categoryOrderList, #manageCategoryList {
         list-style: none;
         padding: 0;
     }
-    #categoryOrderList li {
+    #categoryOrderList li, #manageCategoryList li {
         background: #F8F8FF;
         border: 1px solid #DDA0DD;
         padding: 0.75rem 1rem;
@@ -243,6 +243,19 @@
         cursor: grab;
         margin-right: 10px;
         color: #EE82EE;
+    }
+    #manageCategoryList li .delete-category-btn {
+        background: none;
+        border: none;
+        color: #FF6347;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0 0.2rem;
+        margin-left: 10px;
+        transition: color 0.3s ease;
+    }
+    #manageCategoryList li .delete-category-btn:hover {
+        color: #DC143C;
     }
 
     @media (max-width: 640px) {
@@ -273,13 +286,14 @@
     <button id="showSuggestionsBtn">Suggestions</button>
     <button id="showCategoryOrderBtn">Order by Category</button>
     <button id="showBuyLaterBtn">Buy Later</button>
+    <button id="showManageCategoriesBtn">Manage Categories</button>
   </div>
 
   <div id="shoppingListSection" class="section-container active">
     <h2>Items to Buy</h2>
     <div id="shoppingList" style="margin-top: 1rem;">
       </div>
-    <form id="shoppingForm" autocomplete="off">
+    <form id="shoppingForm" autocomplete="off" class="add-form">
         <label for="newItem">Add an item:</label>
         <input type="text" id="newItem" placeholder="Ex: Milk, Bread, Apples..." required />
         <button type="submit">Add to List ✅</button>
@@ -291,36 +305,18 @@
     <div class="filter-controls">
         <label for="categoryFilter">Filter by category:</label>
         <select id="categoryFilter">
-            <option value="All">All Categories</option>
-            <option value="Breakfast">Breakfast</option>
-            <option value="Beverage">Beverage</option>
-            <option value="Meat">Meat</option>
-            <option value="Fruit">Fruit</option>
-            <option value="Vegetable">Vegetable</option>
-            <option value="Household Product">Household Product</option>
-            <option value="Beauty Product">Beauty Product</option>
-            <option value="Other">Other</option>
-        </select>
+            </select>
     </div>
     <div id="suggestionsList" class="suggestions-grid">
       </div>
 
-    <form id="addSuggestionForm" class="add-suggestion-form" autocomplete="off">
+    <form id="addSuggestionForm" autocomplete="off" class="add-form">
         <label for="newSuggestion">New suggestion:</label>
         <input type="text" id="newSuggestion" placeholder="Ex: Cheese, Chocolate..." required />
         
         <label for="suggestionCategory">Category:</label>
         <select id="suggestionCategory" required>
-            <option value="">Choose a category</option>
-            <option value="Breakfast">Breakfast</option>
-            <option value="Beverage">Beverage</option>
-            <option value="Meat">Meat</option>
-            <option value="Fruit">Fruit</option>
-            <option value="Vegetable">Vegetable</option>
-            <option value="Household Product">Household Product</option>
-            <option value="Beauty Product">Beauty Product</option>
-            <option value="Other">Other</option>
-        </select>
+            </select>
         
         <button type="submit">Add as suggestion ✨</button>
     </form>
@@ -337,11 +333,23 @@
     <h2>Items to Buy Later</h2>
     <div id="buyLaterList" style="margin-top: 1rem;">
     </div>
-    <form id="buyLaterForm" autocomplete="off">
+    <form id="buyLaterForm" autocomplete="off" class="add-form">
         <label for="newBuyLaterItem">Add item to buy later:</label>
         <input type="text" id="newBuyLaterItem" placeholder="Ex: New book, Fancy gadget..." required />
         <button type="submit">Add to Buy Later ➡️</button>
     </form>
+  </div>
+
+  <div id="manageCategoriesSection" class="section-container">
+    <h2>Manage Categories</h2>
+    <form id="addCategoryForm" autocomplete="off" class="add-form">
+        <label for="newCategoryName">Add new category:</label>
+        <input type="text" id="newCategoryName" placeholder="Ex: Pet Food, Snacks..." required />
+        <button type="submit">Add Category ➕</button>
+    </form>
+    <h3>Existing Categories</h3>
+    <ul id="manageCategoryList">
+        </ul>
   </div>
 
   <script>
@@ -359,30 +367,122 @@
     const newBuyLaterItemInput = document.getElementById('newBuyLaterItem');
     const buyLaterListDiv = document.getElementById('buyLaterList');
 
+    const addCategoryForm = document.getElementById('addCategoryForm');
+    const newCategoryNameInput = document.getElementById('newCategoryName');
+    const manageCategoryList = document.getElementById('manageCategoryList');
+
     // New elements for navigation
     const showShoppingListBtn = document.getElementById('showShoppingListBtn');
     const showSuggestionsBtn = document.getElementById('showSuggestionsBtn');
     const showCategoryOrderBtn = document.getElementById('showCategoryOrderBtn');
     const showBuyLaterBtn = document.getElementById('showBuyLaterBtn');
+    const showManageCategoriesBtn = document.getElementById('showManageCategoriesBtn');
 
     const shoppingListSection = document.getElementById('shoppingListSection');
     const suggestionsSection = document.getElementById('suggestionsSection');
     const categoryOrderSection = document.getElementById('categoryOrderSection');
     const buyLaterSection = document.getElementById('buyLaterSection');
+    const manageCategoriesSection = document.getElementById('manageCategoriesSection');
 
     const categoryOrderList = document.getElementById('categoryOrderList');
 
-    // Default category order (will be updated by user)
-    const defaultCategories = [
-        "Breakfast", "Beverage", "Meat", "Fruit", "Vegetable",
-        "Household Product", "Beauty Product", "Other"
+    // Default categories (now only for initial setup)
+    const initialDefaultCategories = [
+        "Petit déjeuner", "Boisson", "Viande", "Fruit", "Légume",
+        "Produit ménager", "Produit de beauté", "Autre"
     ];
+
+    // --- Category Management (new core functions) ---
+
+    function getCategories() {
+        return JSON.parse(localStorage.getItem('user_categories')) || initialDefaultCategories;
+    }
+
+    function saveCategories(categories) {
+        localStorage.setItem('user_categories', JSON.stringify(categories));
+        updateAllCategorySelects(); // Update all selects when categories change
+        loadCategoryOrder(); // Update order list
+        loadShoppingList(); // Reload shopping list to reflect category changes
+        loadSuggestions(); // Reload suggestions to reflect category changes
+        loadManageCategories(); // Refresh the management list
+    }
+
+    function addCategory(categoryName) {
+        if (!categoryName.trim()) {
+            alert('Please enter a category name.');
+            return;
+        }
+        let categories = getCategories();
+        if (categories.some(cat => cat.toLowerCase() === categoryName.trim().toLowerCase())) {
+            alert(`Category "${categoryName.trim()}" already exists!`);
+            return;
+        }
+        categories.push(categoryName.trim());
+        saveCategories(categories);
+        newCategoryNameInput.value = '';
+    }
+
+    function deleteCategory(categoryName) {
+        if (!confirm(`Are you sure you want to delete the category "${categoryName}"? This will also remove any suggestions linked to it.`)) {
+            return;
+        }
+        let categories = getCategories();
+        categories = categories.filter(cat => cat !== categoryName);
+        saveCategories(categories);
+
+        // Also delete suggestions associated with this category
+        let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+        suggestions = suggestions.filter(sug => sug.category !== categoryName);
+        localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
+        loadSuggestions(); // Refresh suggestions list
+    }
+
+    function updateAllCategorySelects() {
+        const categories = getCategories();
+        const allCategoryOptions = ['Toutes', ...categories]; // Add 'Toutes' for filter
+
+        // Update categoryFilterSelect
+        categoryFilterSelect.innerHTML = '';
+        allCategoryOptions.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            categoryFilterSelect.appendChild(option);
+        });
+
+        // Update suggestionCategorySelect
+        suggestionCategorySelect.innerHTML = '<option value="">Choisir une catégorie</option>';
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            suggestionCategorySelect.appendChild(option);
+        });
+    }
+
+    function loadManageCategories() {
+        const categories = getCategories();
+        manageCategoryList.innerHTML = '';
+        if (categories.length === 0) {
+            manageCategoryList.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">No categories defined yet. Add some above!</p>';
+            return;
+        }
+        categories.forEach(category => {
+            const li = document.createElement('li');
+            li.textContent = category;
+            li.innerHTML = `
+                <span>${category}</span>
+                <button class="delete-category-btn" data-category="${category}">✖</button>
+            `;
+            manageCategoryList.appendChild(li);
+        });
+    }
 
     // --- Shopping list management functions ---
 
     function loadShoppingList() {
         let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-        const currentCategoryOrder = JSON.parse(localStorage.getItem('category_order')) || defaultCategories;
+        const currentCategoryOrder = JSON.parse(localStorage.getItem('category_order')) || getCategories();
         shoppingListDiv.innerHTML = '';
 
         if (items.length === 0) {
@@ -390,17 +490,19 @@
             return;
         }
 
-        // Group items by category
         const categorizedItems = {};
-        currentCategoryOrder.forEach(cat => categorizedItems[cat] = []); // Initialize all ordered categories
+        currentCategoryOrder.forEach(cat => categorizedItems[cat] = []);
+
+        // Separate items with a known category from 'Other' or uncategorized
+        const itemsWithKnownCategory = [];
+        const itemsInOtherOrUncategorized = [];
+
         items.forEach(item => {
-            const category = getCategoryForItem(item.name); // Try to get category from suggestions
-            if (category && categorizedItems[category]) {
+            const category = getCategoryForItem(item.name);
+            if (currentCategoryOrder.includes(category)) {
                 categorizedItems[category].push(item);
             } else {
-                // If no category found or category not in ordered list, put in 'Other' or 'Uncategorized'
-                if (!categorizedItems['Other']) categorizedItems['Other'] = []; // Fallback for 'Other' if not in default
-                categorizedItems['Other'].push(item);
+                itemsInOtherOrUncategorized.push(item);
             }
         });
 
@@ -413,11 +515,11 @@
                 categoryHeader.textContent = category;
                 shoppingListDiv.appendChild(categoryHeader);
 
-                categorizedItems[category].forEach((item, index) => {
+                categorizedItems[category].forEach((item) => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'shopping-list-item';
                     const quantityDisplay = item.quantity > 1 ? `<span class="quantity">${item.quantity}x</span>` : '';
-                    // We need a unique index for deletion, so we pass the original item's index in the full list
+                    // Find original index for deletion in the flat items array
                     const originalIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
                     itemDiv.innerHTML = `
                         ${quantityDisplay}<span>${item.name}</span>
@@ -427,6 +529,27 @@
                 });
             }
         });
+
+        // Append 'Other' or uncategorized items at the very end if any
+        if (itemsInOtherOrUncategorized.length > 0) {
+            const otherCategoryHeader = document.createElement('h3');
+            otherCategoryHeader.style.color = '#E75480';
+            otherCategoryHeader.style.marginTop = '1rem';
+            otherCategoryHeader.textContent = 'Autre / Non classé';
+            shoppingListDiv.appendChild(otherCategoryHeader);
+
+            itemsInOtherOrUncategorized.forEach((item) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'shopping-list-item';
+                const quantityDisplay = item.quantity > 1 ? `<span class="quantity">${item.quantity}x</span>` : '';
+                const originalIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
+                itemDiv.innerHTML = `
+                    ${quantityDisplay}<span>${item.name}</span>
+                    <button class="delete-btn" data-index="${originalIndex}">✖</button>
+                `;
+                shoppingListDiv.appendChild(itemDiv);
+            });
+        }
     }
 
     function addShoppingItem(itemName) {
@@ -459,7 +582,7 @@
     function getCategoryForItem(itemName) {
         const suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
         const foundSuggestion = suggestions.find(sug => sug.name.toLowerCase() === itemName.toLowerCase());
-        return foundSuggestion ? foundSuggestion.category : 'Other'; // Default to 'Other' if no category found
+        return foundSuggestion ? foundSuggestion.category : 'Autre'; // Default to 'Autre' if no category found
     }
 
     // --- Suggestions management functions ---
@@ -470,7 +593,7 @@
 
       const selectedCategory = categoryFilterSelect.value;
       
-      const filteredSuggestions = selectedCategory === 'All' 
+      const filteredSuggestions = selectedCategory === 'Toutes' 
         ? allSuggestions 
         : allSuggestions.filter(sug => sug.category === selectedCategory);
 
@@ -573,14 +696,32 @@
     let draggedItem = null;
 
     function loadCategoryOrder() {
-        let categoryOrder = JSON.parse(localStorage.getItem('category_order')) || defaultCategories;
+        const allAvailableCategories = getCategories();
+        let categoryOrder = JSON.parse(localStorage.getItem('category_order')) || allAvailableCategories;
+        
+        // Ensure categoryOrder only contains valid, existing categories and remove duplicates
+        categoryOrder = categoryOrder.filter(cat => allAvailableCategories.includes(cat));
+        categoryOrder = [...new Set(categoryOrder)]; // Remove duplicates
+        
+        // Add any new categories that might have been added but aren't in the current order
+        allAvailableCategories.forEach(cat => {
+            if (!categoryOrder.includes(cat)) {
+                categoryOrder.push(cat);
+            }
+        });
+
         categoryOrderList.innerHTML = '';
+
+        if (categoryOrder.length === 0) {
+            categoryOrderList.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">No categories to order. Add some in "Manage Categories"!</p>';
+            return;
+        }
 
         categoryOrder.forEach(category => {
             const li = document.createElement('li');
             li.textContent = category;
             li.setAttribute('draggable', true);
-            li.dataset.category = category; // Store category name in data attribute
+            li.dataset.category = category;
             li.innerHTML = `<span class="drag-handle">⠿</span> ${category}`;
 
             li.addEventListener('dragstart', (e) => {
@@ -592,31 +733,40 @@
                 draggedItem.classList.remove('dragging');
                 draggedItem = null;
                 saveCategoryOrder();
-                loadShoppingList(); // Reload shopping list to apply new order
+                loadShoppingList();
             });
 
             li.addEventListener('dragover', (e) => {
-                e.preventDefault(); // Allow drop
+                e.preventDefault();
                 const draggingOver = li;
                 const container = categoryOrderList;
                 const children = Array.from(container.children);
 
-                if (draggedItem === draggingOver) return; // Don't do anything if dragging over itself
+                if (draggedItem === draggingOver) return;
 
                 const draggingOverIndex = children.indexOf(draggingOver);
                 const draggedItemIndex = children.indexOf(draggedItem);
 
-                if (draggedItemIndex < draggingOverIndex) {
-                    // Dragging down, insert after
-                    container.insertBefore(draggingOver, draggedItem);
-                } else {
-                    // Dragging up, insert before
-                    container.insertBefore(draggedItem, draggingOver);
+                // Determine where to insert based on mouse position
+                const rect = draggingOver.getBoundingClientRect();
+                const offset = e.clientY - rect.top;
+
+                if (draggedItemIndex < draggingOverIndex) { // Dragging down
+                    if (offset > rect.height / 2) {
+                        // Insert after
+                        container.insertBefore(draggedItem, draggingOver.nextSibling);
+                    }
+                } else { // Dragging up
+                    if (offset < rect.height / 2) {
+                        // Insert before
+                        container.insertBefore(draggedItem, draggingOver);
+                    }
                 }
             });
 
             categoryOrderList.appendChild(li);
         });
+        saveCategoryOrder(); // Save initial order or updated order after cleaning
     }
 
     function saveCategoryOrder() {
@@ -632,30 +782,37 @@
         suggestionsSection.classList.remove('active');
         categoryOrderSection.classList.remove('active');
         buyLaterSection.classList.remove('active');
+        manageCategoriesSection.classList.remove('active'); // New section
 
         // Remove 'active' class from all navigation buttons
         showShoppingListBtn.classList.remove('active');
         showSuggestionsBtn.classList.remove('active');
         showCategoryOrderBtn.classList.remove('active');
         showBuyLaterBtn.classList.remove('active');
+        showManageCategoriesBtn.classList.remove('active'); // New button
 
         // Show the desired section and update the active button
         if (sectionToShow === 'shoppingList') {
             shoppingListSection.classList.add('active');
             showShoppingListBtn.classList.add('active');
-            loadShoppingList(); // Ensure list is reloaded with potentially new order
+            loadShoppingList();
         } else if (sectionToShow === 'suggestions') {
             suggestionsSection.classList.add('active');
             showSuggestionsBtn.classList.add('active');
+            updateAllCategorySelects(); // Ensure selects are up-to-date
             loadSuggestions();
         } else if (sectionToShow === 'categoryOrder') {
             categoryOrderSection.classList.add('active');
             showCategoryOrderBtn.classList.add('active');
-            loadCategoryOrder(); // Load categories for ordering
+            loadCategoryOrder();
         } else if (sectionToShow === 'buyLater') {
             buyLaterSection.classList.add('active');
             showBuyLaterBtn.classList.add('active');
             loadBuyLaterList();
+        } else if (sectionToShow === 'manageCategories') { // New section
+            manageCategoriesSection.classList.add('active');
+            showManageCategoriesBtn.classList.add('active');
+            loadManageCategories();
         }
     }
 
@@ -703,24 +860,43 @@
         }
     });
 
+    addCategoryForm.addEventListener('submit', e => {
+        e.preventDefault();
+        addCategory(newCategoryNameInput.value);
+    });
+
+    manageCategoryList.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-category-btn')) {
+            const categoryToDelete = e.target.dataset.category;
+            deleteCategory(categoryToDelete);
+        }
+    });
 
     // Event handlers for navigation buttons
     showShoppingListBtn.addEventListener('click', () => showSection('shoppingList'));
     showSuggestionsBtn.addEventListener('click', () => showSection('suggestions'));
     showCategoryOrderBtn.addEventListener('click', () => showSection('categoryOrder'));
     showBuyLaterBtn.addEventListener('click', () => showSection('buyLater'));
+    showManageCategoriesBtn.addEventListener('click', () => showSection('manageCategories'));
 
     // --- Initialization on page load ---
     window.addEventListener('load', () => {
-      // Initialize category order if not present in localStorage
-      if (!localStorage.getItem('category_order')) {
-          localStorage.setItem('category_order', JSON.stringify(defaultCategories));
+      // Initialize categories if not present in localStorage
+      if (!localStorage.getItem('user_categories')) {
+          localStorage.setItem('user_categories', JSON.stringify(initialDefaultCategories));
       }
+      // Initialize category order if not present in localStorage, based on current categories
+      if (!localStorage.getItem('category_order')) {
+          localStorage.setItem('category_order', JSON.stringify(getCategories()));
+      }
+
+      updateAllCategorySelects(); // Populate all category dropdowns
       loadShoppingList();
       loadSuggestions();
-      loadBuyLaterList(); // Load buy later list on init
-      loadCategoryOrder(); // Load categories for drag/drop
-      // Show shopping list by default on load
+      loadBuyLaterList();
+      loadCategoryOrder();
+      loadManageCategories();
+
       showSection('shoppingList');
     });
   </script>
