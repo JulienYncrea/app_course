@@ -119,7 +119,9 @@
       border: 1px solid #FFC0CB;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    .shopping-list-item .delete-btn, .buy-later-item .delete-btn {
+    .shopping-list-item .delete-btn, 
+    .shopping-list-item .decrement-btn,
+    .buy-later-item .delete-btn {
       background: none;
       border: none;
       color: #FF6347;
@@ -129,18 +131,32 @@
       margin: 0;
       width: auto;
       transition: color 0.3s ease;
+      line-height: 1; /* Ensure consistent vertical alignment */
     }
-    .shopping-list-item .delete-btn:hover, .buy-later-item .delete-btn:hover {
+    .shopping-list-item .decrement-btn {
+        color: #6A057F; /* Darker color for decrement */
+        font-size: 1.8rem; /* Slightly larger for visibility */
+        margin-right: 5px; /* Space between - and quantity */
+    }
+    .shopping-list-item .delete-btn:hover, 
+    .buy-later-item .delete-btn:hover {
       color: #DC143C;
     }
+    .shopping-list-item .decrement-btn:hover {
+        color: #8A2BE2; /* Change color on hover for decrement */
+    }
+
     .shopping-list-item span, .buy-later-item span {
         flex-grow: 1;
         padding-right: 10px;
     }
     .quantity {
         font-weight: bold;
-        margin-right: 8px;
+        margin-left: 8px; /* Space after quantity */
+        margin-right: 8px; /* Space before quantity if decrement is present */
         color: #FF8C00;
+        min-width: 20px; /* Ensure space for quantity */
+        text-align: center;
     }
 
     /* Styles for the suggestions list */
@@ -160,9 +176,9 @@
       cursor: pointer;
       transition: all 0.3s ease;
       user-select: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; /* Prevent wrapping */
+      overflow: hidden; /* Hide overflow */
+      text-overflow: ellipsis; /* Add ellipsis for overflowed text */
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -178,6 +194,9 @@
         flex-grow: 1;
         padding-right: 5px;
         font-weight: 500;
+        overflow: hidden; /* Ensure text overflow ellipsis works */
+        text-overflow: ellipsis;
+        white-space: nowrap; /* Keep on single line */
     }
     .delete-suggestion-btn {
       background: none;
@@ -190,6 +209,7 @@
       width: auto;
       transition: color 0.3s ease;
       line-height: 1;
+      flex-shrink: 0; /* Prevent button from shrinking */
     }
     .delete-suggestion-btn:hover {
       color: #FF4500;
@@ -298,7 +318,7 @@
     <button id="showSuggestionsBtn">Suggestions</button>
     <button id="showCategoryOrderBtn">Order by Category</button>
     <button id="showBuyLaterBtn">Buy Later</button>
-    </div>
+  </div>
 
   <div id="shoppingListSection" class="section-container active">
     <h2>Items to Buy</h2>
@@ -520,14 +540,19 @@
                 categoryHeader.textContent = category;
                 shoppingListDiv.appendChild(categoryHeader);
 
-                categorizedItems[category].forEach((item) => {
+                categorizedItems[category].forEach((item, originalIndexInFlatList) => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'shopping-list-item';
-                    const quantityDisplay = item.quantity > 1 ? `<span class="quantity">${item.quantity}x</span>` : '';
-                    const originalIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
+                    
+                    // We need to pass the original index to decrement/delete correctly
+                    // Find the actual index of the item in the *full* items array
+                    const actualIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
+
                     itemDiv.innerHTML = `
-                        ${quantityDisplay}<span>${item.name}</span>
-                        <button class="delete-btn" data-index="${originalIndex}">✖</button>
+                        <button class="decrement-btn" data-index="${actualIndex}">-</button>
+                        <span class="quantity">${item.quantity}x</span>
+                        <span>${item.name}</span>
+                        <button class="delete-btn" data-index="${actualIndex}">✖</button>
                     `;
                     shoppingListDiv.appendChild(itemDiv);
                 });
@@ -544,11 +569,12 @@
             itemsInOtherOrUncategorized.forEach((item) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'shopping-list-item';
-                const quantityDisplay = item.quantity > 1 ? `<span class="quantity">${item.quantity}x</span>` : '';
-                const originalIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
+                const actualIndex = items.findIndex(i => i.name === item.name && i.quantity === item.quantity);
                 itemDiv.innerHTML = `
-                    ${quantityDisplay}<span>${item.name}</span>
-                    <button class="delete-btn" data-index="${originalIndex}">✖</button>
+                    <button class="decrement-btn" data-index="${actualIndex}">-</button>
+                    <span class="quantity">${item.quantity}x</span>
+                    <span>${item.name}</span>
+                    <button class="delete-btn" data-index="${actualIndex}">✖</button>
                 `;
                 shoppingListDiv.appendChild(itemDiv);
             });
@@ -571,6 +597,18 @@
 
       localStorage.setItem('shopping_list_items', JSON.stringify(items));
       loadShoppingList();
+    }
+
+    function decrementShoppingItem(index) {
+        let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
+        if (index >= 0 && index < items.length) {
+            items[index].quantity--;
+            if (items[index].quantity <= 0) {
+                items.splice(index, 1); // Remove item if quantity is 0 or less
+            }
+            localStorage.setItem('shopping_list_items', JSON.stringify(items));
+            loadShoppingList();
+        }
     }
 
     function deleteShoppingItem(index) {
@@ -764,7 +802,7 @@
             });
         }
         saveCategoryOrder();
-        loadManageCategories(); // Also load the manage categories list here
+        loadManageCategories();
     }
 
     function saveCategoryOrder() {
@@ -800,7 +838,7 @@
         } else if (sectionToShow === 'categoryOrder') {
             categoryOrderSection.classList.add('active');
             showCategoryOrderBtn.classList.add('active');
-            loadCategoryOrder(); // This will also call loadManageCategories()
+            loadCategoryOrder();
         } else if (sectionToShow === 'buyLater') {
             buyLaterSection.classList.add('active');
             showBuyLaterBtn.classList.add('active');
@@ -820,6 +858,9 @@
       if (e.target.classList.contains('delete-btn')) {
         const index = parseInt(e.target.dataset.index);
         deleteShoppingItem(index);
+      } else if (e.target.classList.contains('decrement-btn')) { // New event listener for decrement
+        const index = parseInt(e.target.dataset.index);
+        decrementShoppingItem(index);
       }
     });
 
@@ -883,7 +924,6 @@
       loadShoppingList();
       loadSuggestions();
       loadBuyLaterList();
-      // Only call loadCategoryOrder as it now handles loading manage categories as well
       loadCategoryOrder(); 
 
       showSection('shoppingList');
