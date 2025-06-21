@@ -24,6 +24,12 @@
       background: #374151;
       padding: 1rem;
       border-radius: 0.5rem;
+      /* Masqué par défaut, JavaScript gérera l'affichage */
+      display: none; 
+    }
+    /* Style pour la section active */
+    .section-container.active {
+        display: block;
     }
     label {
       display: block;
@@ -58,6 +64,32 @@
         background-position: right 0.7em top 50%;
         background-size: 0.65em auto;
         padding-right: 2.5em;
+    }
+
+    /* Styles pour les boutons de navigation */
+    .navigation-buttons {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem; /* Espacement entre les boutons */
+    }
+    .navigation-buttons button {
+        width: auto; /* Les boutons s'adaptent à leur contenu */
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: #4b5563; /* Couleur par défaut */
+        color: #f9fafb;
+        border: 2px solid #4b5563;
+    }
+    .navigation-buttons button.active {
+        background: #fbbf24; /* Couleur active */
+        color: #1f2937;
+        border-color: #fbbf24;
+    }
+    .navigation-buttons button:hover:not(.active) {
+        background-color: #6b7280;
+        border-color: #6b7280;
     }
 
     /* Styles pour la liste d'achats */
@@ -172,7 +204,12 @@
 <body>
   <h1>Ma Liste de Courses 🛒</h1>
 
-  <div class="section-container">
+  <div class="navigation-buttons">
+    <button id="showShoppingListBtn" class="active">Ma Liste</button>
+    <button id="showSuggestionsBtn">Suggestions</button>
+  </div>
+
+  <div id="shoppingListSection" class="section-container active">
     <h2>Articles à acheter</h2>
     <div id="shoppingList" style="margin-top: 1rem;"> 
       </div>
@@ -183,7 +220,7 @@
     </form>
   </div>
 
-  <div class="section-container">
+  <div id="suggestionsSection" class="section-container">
     <h2>Suggestions par catégorie</h2>
     <div class="filter-controls">
         <label for="categoryFilter">Filtrer par catégorie :</label>
@@ -234,6 +271,12 @@
     const suggestionsListDiv = document.getElementById('suggestionsList');
     const categoryFilterSelect = document.getElementById('categoryFilter');
 
+    // Nouveaux éléments pour la navigation
+    const showShoppingListBtn = document.getElementById('showShoppingListBtn');
+    const showSuggestionsBtn = document.getElementById('showSuggestionsBtn');
+    const shoppingListSection = document.getElementById('shoppingListSection');
+    const suggestionsSection = document.getElementById('suggestionsSection');
+
     // --- Fonctions de gestion de la liste d'achats ---
 
     function loadShoppingList() {
@@ -254,8 +297,6 @@
         `;
         shoppingListDiv.appendChild(itemDiv);
       });
-
-      // Le défilement vers le bas n'est PLUS ICI
     }
 
     function addShoppingItem(itemName) {
@@ -274,14 +315,7 @@
 
       localStorage.setItem('shopping_list_items', JSON.stringify(items));
       
-      // Recharge la liste pour afficher les changements
       loadShoppingList(); 
-
-      // AJOUT ICI : Faire défiler la fenêtre vers le bas UNIQUEMENT LORS DE L'AJOUT
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
     }
 
     function deleteShoppingItem(index) {
@@ -289,7 +323,7 @@
       if (index >= 0 && index < items.length) {
         items.splice(index, 1);
         localStorage.setItem('shopping_list_items', JSON.stringify(items));
-        loadShoppingList(); // Recharge la liste, mais PAS de défilement ici
+        loadShoppingList(); 
       }
     }
 
@@ -359,6 +393,26 @@
         loadSuggestions();
     }
 
+    // --- Fonctions de navigation entre les sections ---
+    function showSection(sectionToShow) {
+        // Masque toutes les sections
+        shoppingListSection.classList.remove('active');
+        suggestionsSection.classList.remove('active');
+
+        // Retire la classe 'active' de tous les boutons de navigation
+        showShoppingListBtn.classList.remove('active');
+        showSuggestionsBtn.classList.remove('active');
+
+        // Affiche la section désirée et met à jour le bouton actif
+        if (sectionToShow === 'shoppingList') {
+            shoppingListSection.classList.add('active');
+            showShoppingListBtn.classList.add('active');
+        } else if (sectionToShow === 'suggestions') {
+            suggestionsSection.classList.add('active');
+            showSuggestionsBtn.classList.add('active');
+        }
+    }
+
     // --- Gestionnaires d'événements ---
 
     shoppingForm.addEventListener('submit', e => {
@@ -386,15 +440,20 @@
 
       addSuggestion(newSugName, sugCategory);
       newSuggestionInput.value = '';
-      // suggestionCategorySelect.value est MAINTENUE
     });
 
     categoryFilterSelect.addEventListener('change', loadSuggestions);
+
+    // Gestionnaires d'événements pour les boutons de navigation
+    showShoppingListBtn.addEventListener('click', () => showSection('shoppingList'));
+    showSuggestionsBtn.addEventListener('click', () => showSection('suggestions'));
 
     // --- Initialisation au chargement de la page ---
     window.addEventListener('load', () => {
       loadShoppingList();
       loadSuggestions();
+      // Afficher la liste de courses par défaut au chargement
+      showSection('shoppingList'); 
     });
   </script>
 </body>
