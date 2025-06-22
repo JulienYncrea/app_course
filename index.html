@@ -8,7 +8,6 @@
   <link rel="apple-touch-icon" href="icon.png" />
   <meta name="theme-color" content="#FFC0CB" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -338,14 +337,6 @@
   </style>
   <script>
     if ('serviceWorker' in navigator) {
-                // --- Initialisation Supabase ---
-        const SUPABASE_URL = 'https://cepqcretnxfhjbvdukkk.supabase.co'; // Remplace par ta Project URL
-        const SUPABASE_ANON_KEY = 'uzPVTW0F8aS3Syn8TiYlgr484pL5XPkSpdtSw/lZ5zODX5xO91hx/8WJcLZpNf8PRTSGtluKEfQMHc5OSVYZmA=='; // Remplace par ta clé anon (public)
-
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        // --- Fin Initialisation Supabase ---
-
-        // ... le reste de ton code JavaScript
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
           .then(reg => console.log('Service Worker registered:', reg.scope))
