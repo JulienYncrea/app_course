@@ -789,6 +789,8 @@
     // --- Category Order management functions (Drag and Drop) ---
 
     let draggedItem = null;
+    let touchStartTimer = null; // Timer for long press
+    const LONG_PRESS_THRESHOLD = 500; // ms for long press
 
     function loadCategoryOrder() {
         const allAvailableCategories = getCategories();
@@ -811,19 +813,27 @@
             categoryOrder.forEach(category => {
                 const li = document.createElement('li');
                 li.textContent = category;
-                li.setAttribute('draggable', true);
+                li.setAttribute('draggable', true); // Keep for desktop
                 li.dataset.category = category;
                 li.innerHTML = `<span class="drag-handle">⠿</span> ${category}`;
 
-                // Prevent default touch behavior on iOS
+                // Touch events for mobile (long press to drag)
                 li.addEventListener('touchstart', (e) => {
-                    e.preventDefault(); // Prevent scrolling/text selection
-                    draggedItem = li;
-                    setTimeout(() => li.classList.add('dragging'), 0);
-                }, { passive: false }); // Use { passive: false } to allow preventDefault
+                    e.stopPropagation(); // Prevent immediate text selection/scroll interference
+                    if (touchStartTimer) clearTimeout(touchStartTimer);
+                    
+                    touchStartTimer = setTimeout(() => {
+                        draggedItem = li;
+                        li.classList.add('dragging');
+                        // Optional: Add haptic feedback for long press
+                        if (navigator.vibrate) navigator.vibrate(50);
+                    }, LONG_PRESS_THRESHOLD);
+                }, { passive: false }); 
 
                 li.addEventListener('touchmove', (e) => {
-                    if (!draggedItem) return;
+                    if (touchStartTimer) clearTimeout(touchStartTimer); // Cancel long press if moved
+                    if (!draggedItem) return; // Only proceed if drag is active
+
                     e.preventDefault(); // Prevent scrolling while dragging
                     const touch = e.touches[0];
                     const target = document.elementFromPoint(touch.clientX, touch.clientY);
@@ -852,6 +862,7 @@
                 }, { passive: false });
 
                 li.addEventListener('touchend', () => {
+                    if (touchStartTimer) clearTimeout(touchStartTimer);
                     if (draggedItem) {
                         draggedItem.classList.remove('dragging');
                         draggedItem = null;
