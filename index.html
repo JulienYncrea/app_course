@@ -2,343 +2,489 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>My Shopping List 🛒</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <meta name="theme-color" content="#FFC0CB" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <meta name="theme-color" content="#fcf2f2" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0; padding: 1rem;
-      background: linear-gradient(to bottom right, #FAD0C4, #FFD1DC);
+      background: #fcf2f2;
       color: #333;
+      transition: padding-bottom 0.3s ease-out; /* Animation for padding */
     }
     h1, h2 {
       text-align: center;
       color: #E75480;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      cursor: pointer; /* Indicate clickable titles for scrolling */
+      -webkit-user-select: none; /* For WebKit browsers (Chrome, Safari) */
+      -moz-user-select: none;    /* For Firefox */
+      -ms-user-select: none;     /* For Internet Explorer/Edge */
+      user-select: none;         /* Standard */
+      cursor: pointer;
     }
     .section-container {
       max-width: 600px;
       margin: 1rem auto;
-      background: #FFFFFF;
+      background: #fcf2f2;
       padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: none;
-    }
-    .section-container.active {
-        display: block;
+      margin-bottom: 1rem;
     }
     label {
       display: block;
       margin-top: 0.75rem;
       font-weight: bold;
-      color: #6A057F;
+      color: #6A057F; /* Color from index copy */
     }
-    input, button, select {
-      width: 100%;
-      padding: 0.7rem;
-      margin-top: 0.4rem;
-      border: 1px solid #DDA0DD;
+    input[type="text"], input[type="number"], select {
+      width: 100%; /* Changed from calc(100% - 20px) for consistency with padding */
+      padding: 0.7rem; /* Adjusted from 0.8rem */
+      margin-top: 0.4rem; /* Adjusted from margin-bottom */
+      border: 1px solid #DDA0DD; /* Color from index copy */
       border-radius: 0.5rem;
       box-sizing: border-box;
       color: #333;
       font-size: 1rem;
     }
     button {
-      background: #FF69B4;
-      color: #FFFFFF;
-      font-weight: bold;
+      background: #FF69B4; /* From index copy */
+      color: #FFFFFF; /* From index copy */
+      font-weight: bold; /* From index copy */
       cursor: pointer;
-      transition: all 0.3s ease;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.3s ease; /* From index copy */
+      border: none; /* From index copy */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* From index copy */
+      width: 100%; /* Ensure full width for general buttons */
+      padding: 0.7rem; /* From index copy */
+      margin-top: 0.4rem; /* From index copy */
+      border-radius: 0.5rem; /* From index copy */
     }
     button:hover {
-      background: #C71585;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      background: #C71585; /* From index copy */
+      transform: translateY(-2px); /* From index copy */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* From index copy */
     }
     select {
-        background: #F8F8FF;
+        background: #F8F8FF; /* From index copy */
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='%23C71585' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%23C71585' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); /* From index copy */
         background-repeat: no-repeat;
         background-position: right 0.7em top 50%;
         background-size: 0.65em auto;
         padding-right: 2.5em;
     }
 
-    /* Styles for navigation buttons */
-    .navigation-buttons {
-        text-align: center;
-        margin-bottom: 2rem;
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-    .navigation-buttons button {
-        width: auto;
-        padding: 0.8rem 1.8rem;
-        font-size: 1.1rem;
-        background-color: #EE82EE;
-        color: #FFFFFF;
-        border: 2px solid #DA70D6;
-        border-radius: 25px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        display: inline-flex; /* Use flex to align icon and text */
-        align-items: center;
-        justify-content: center;
-    }
-    .navigation-buttons button.active {
-        background: #FFD700;
-        color: #6A057F;
-        border-color: #FFA500;
-        font-weight: bold;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .navigation-buttons button:hover:not(.active) {
-        background-color: #DDA0DD;
-        border-color: #BA55D3;
-    }
-    .navigation-buttons .toggle-options-btn {
-        background-color: #9370DB; /* Couleur différente pour le bouton toggle */
-        border-color: #8A2BE2;
-        padding: 0.8rem 1.2rem; /* Plus petit pour l'icône */
-    }
-    .navigation-buttons .toggle-options-btn:hover {
-        background-color: #8A2BE2;
-        border-color: #6A057F;
-    }
-    .navigation-buttons .toggle-options-btn i {
-        transition: transform 0.3s ease;
-    }
-    .navigation-buttons .option-button {
-        display: none; /* Hidden by default */
-    }
-    .navigation-buttons.show-options .option-button {
-        display: inline-flex; /* Show when parent has show-options class */
+    /* Reset UL padding for left alignment */
+    #shoppingListToBuy, #buyLaterList, #suggestionList, #categoryList, #categoryOrderList {
+      list-style: none; /* Remove default bullet points */
+      padding-left: 0; /* Remove default browser padding */
+      margin-left: 0; /* Ensure no margin is pushing it */
     }
 
-    /* Styles for the shopping list */
-    .shopping-list-item, .buy-later-item {
+    /* Styles for the shopping list items (adapting from index copy's .shopping-list-item) */
+    #shoppingListToBuy li, #buyLaterList li { /* ADDED #buyLaterList li here */
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #FFF0F5;
-      padding: 0.7rem 1.2rem;
-      margin-top: 0.7rem;
-      border-radius: 0.75rem;
-      font-size: 1.1rem;
-      color: #6A057F;
-      border: 1px solid #FFC0CB;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      /* Prevent text selection on drag for iOS/Safari */
-      -webkit-user-select: none; /* Safari */
-      -moz-user-select: none;    /* Firefox */
-      -ms-user-select: none;     /* IE10+ */
-      user-select: none;         /* Standard */
-    }
-    .shopping-list-item .delete-btn, 
-    .shopping-list-item .decrement-btn,
-    .buy-later-item .delete-btn {
-      background: none;
-      border: none;
-      color: #FF6347;
-      font-size: 1.6rem;
-      cursor: pointer;
-      padding: 0 0.5rem;
-      margin: 0;
-      width: auto;
-      transition: color 0.3s ease;
-      line-height: 1; /* Ensure consistent vertical alignment */
-    }
-    .shopping-list-item .decrement-btn {
-        color: #6A057F; /* Darker color for decrement */
-        font-size: 1.8rem; /* Slightly larger for visibility */
-        margin-right: 5px; /* Space between - and quantity */
-    }
-    .shopping-list-item .delete-btn:hover, 
-    .buy-later-item .delete-btn:hover {
-      color: #DC143C;
-    }
-    .shopping-list-item .decrement-btn:hover {
-        color: #8A2BE2; /* Change color on hover for decrement */
-    }
-
-    .shopping-list-item span, .buy-later-item span {
-        flex-grow: 1;
-        padding-right: 10px;
-    }
-    .quantity {
-        font-weight: bold;
-        margin-left: 8px; /* Space after quantity */
-        margin-right: 8px; /* Space before quantity if decrement is present */
-        color: #FF8C00;
-        min-width: 20px; /* Ensure space for quantity */
-        text-align: center;
-    }
-
-    /* Styles for the suggestions list */
-    .suggestions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 0.7rem;
-      margin-top: 1.5rem;
-    }
-    .suggestion-item {
-      position: relative;
-      background: #9370DB;
-      color: #FFFFFF;
-      padding: 0.6rem 1rem;
-      border-radius: 0.75rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      background: #FFF0F5; /* From index copy */
+      padding: 0.7rem 1.2rem 0.7rem 0; /* Adjusted padding-left for alignment */
+      margin-top: 0.7rem; /* From index copy */
+      border-radius: 0.75rem; /* From index copy */
+      font-size: 1.1rem; /* From index copy */
+      color: #6A057F; /* From index copy */
+      border: 1px solid #FFC0CB; /* From index copy */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* From index copy */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
-      white-space: nowrap; /* Prevent wrapping */
-      overflow: hidden; /* Hide overflow */
-      text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+      flex-wrap: nowrap; /* Prevent wrapping in main list items */
+
+    }
+
+    /* Adapting delete/decrement buttons from index copy */
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      /* margin-right: 10px; Removed as it's part of flex-grow now */
+      flex-shrink: 0; /* Prevent it from shrinking */
+    }
+    .quantity-control button { /* This will be the decrement/increment buttons */
+        background: none; /* Changed from #ddd */
+        border: 1px solid #DDA0DD; /* Added border */
+        border-radius: 50%; /* Rounded borders */
+        color: #6A057F; /* Darker color for decrement, from index copy */
+        font-size: 1rem; /* Slightly larger for visibility, from index copy */
+        cursor: pointer;
+        padding: 0; /* Remove padding */
+        margin: 0 2px; /* Adjusted margin */
+        width: 30px; /* Fixed width for round button */
+        height: 30px; /* Fixed height for round button */
+        display: flex; /* For centering content */
+        justify-content: center; /* For centering content */
+        align-items: center; /* For centering content */
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+    .quantity-control button:hover {
+        background-color: #E6E6FA; /* Ensure no background on hover */
+        color: #8A2BE2; /* Change color on hover for decrement, from index copy */
+        transform: scale(1.05);
+    }
+    .quantity-control span {
+        font-weight: bold; /* From index copy */
+        margin: 0 5px; /* Adjusted margin */
+        color: #FF8C00; /* From index copy */
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .item-actions .remove-btn { /* This will be the main delete button for list items */
+      background: none; /* Changed from #f44336 */
+      border: 1px solid #FF6347; /* Added border for round button */
+      border-radius: 50%; /* Make it round */
+      color: #FF6347; /* From index copy */
+      font-size: 1.2rem; /* Adjusted for round button */
+      cursor: pointer;
+      padding: 0; /* Remove padding for round button */
+      margin: 0;
+      width: 30px; /* Fixed width for round button */
+      height: 30px; /* Fixed height for round button */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      line-height: 1;
+    }
+    .item-actions .remove-btn:hover {
+      background-color: #ffe0e0; /* Light red background on hover */
+      color: #DC143C; /* From index copy */
+    }
+    /* Updated to use <i> tag directly, removing ::before */
+    .item-actions .remove-btn i {
+        font-family: "Font Awesome 6 Free"; /* Ensure correct font-family for FA6 */
+        font-weight: 900;
+    }
+    .item-actions .remove-btn span {
+        display: none; /* Hide original text */
+    }
+
+    /* Fixed bottom navigation (from index.html, retaining structure) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #EE82EE; /* From index copy's navigation buttons */
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+      transform: translateY(0);
+      transition: transform 0.3s ease-out;
+    }
+    .bottom-nav.hidden-nav {
+      transform: translateY(100%);
+    }
+    .nav-item {
+      color: #FFFFFF; /* From index copy's navigation buttons */
+      text-align: center;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .nav-item i {
+      font-size: 1.5rem;
+      margin-bottom: 0.2rem;
+    }
+    .nav-item.active {
+      font-weight: bold;
+      color: #FFD700; /* Active color from index copy's navigation buttons */
+    }
+    .toggle-nav-button {
+      position: absolute;
+      top: -45px;
+      right: 20px;
+      background-color: #9370DB; /* From index copy's toggle button */
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 1001;
+      transition: background-color 0.3s ease, transform 0.3s ease; /* Added transform for consistency */
+    }
+    .toggle-nav-button:hover {
+        background-color: #8A2BE2; /* From index copy's toggle button hover */
+        transform: translateY(-2px); /* Added for consistency */
+    }
+    .toggle-nav-button i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease; /* For icon rotation */
+    }
+
+    /* Style for hidden sections */
+    .section.hidden {
+      display: none;
+    }
+
+    /* Style for suggestion list items (adapting from index copy's .suggestion-item) */
+    #suggestionList li {
+      position: relative;
+      background: #F8F8FF; /* From index copy */
+      border: 1px solid #DDA0DD;
+      color: #6A057F; /* From index copy */
+      padding: 0.6rem 1.2rem 0.6rem 0; /* Adjusted padding-left for alignment */
+      border-radius: 0.75rem; /* From index copy */
+      text-align: left; /* Adjust from center for content */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Unified transition */
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-right: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding-right: 5px; /* From index copy */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* From index copy */
+      margin-top: 0.7rem; /* Consistent spacing */
     }
-    .suggestion-item:hover {
-      background: #8A2BE2;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    #suggestionList li:hover {
+      background: #E6E6FA; /* From index copy */
+      transform: translateY(-2px); /* From index copy */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* From index copy */
     }
-    .suggestion-item-text {
+    /* Only apply hover effect to the item info part for adding to list */
+    #suggestionList li .suggestion-info:hover {
+        background: none; /* Reset background if it was changed */
+        cursor: pointer;
+    }
+
+    #suggestionList .suggestion-info {
         flex-grow: 1;
         padding-right: 5px;
         font-weight: 500;
-        overflow: hidden; /* Ensure text overflow ellipsis works */
+        overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap; /* Keep on single line */
+        white-space: nowrap; /* Ensure text stays on one line */
+        padding: 0.6rem 0; /* Add padding to make the clickable area larger */
+        /* Updated for combined name and category on one line with ellipsis */
+        display: flex; /* Use flex to align name and category */
+        gap: 5px; /* Small gap between name and category */
     }
-    .delete-suggestion-btn {
-      background: none;
-      border: none;
-      color: #FFD700;
-      font-size: 1.3rem;
+    #suggestionList .suggestion-info .name {
+        font-weight: bold;
+        color: #6A057F; /* Ensure visibility */
+        padding-left: 1.2rem;
+        white-space: nowrap; /* Prevent name from wrapping */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-shrink: 1; /* Allow name to shrink if needed */
+        min-width: 0; /* Important for flex items with overflow */
+    }
+    #suggestionList .suggestion-info .category {
+        font-size: 0.85em;
+        color: #C71585; /* Lighter color for category */
+        white-space: nowrap; /* Prevent category from wrapping */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-shrink: 0; /* Prevent category from shrinking much initially */
+    }
+    /* Adjusted styles for the item name within #shoppingListToBuy and #buyLaterList */
+    #shoppingListToBuy li .item-name, #buyLaterList li .item-name {
+        flex-grow: 1; /* Allow the name to take up available space */
+        padding-left: 10px; /* Space between quantity controls and name */
+        white-space: normal; /* Allow text to wrap naturally if there are spaces */
+        overflow-wrap: break-word; /* Break long words if necessary */
+        word-break: break-word; /* Fallback for older browsers */
+        min-width: 0; /* Ensure it can shrink in flex container */
+        color: #6A057F; /* Set explicit color */
+        font-weight: normal; /* Ensure it's not bold */
+    }
+    /* Removed add-to-shopping-list-btn styles as the button is removed from HTML */
+    #suggestionList .suggestion-actions .remove-btn {
+      background: none; /* Changed from #f44336 */
+      border: 1px solid #FF6347; /* Added border for round button */
+      border-radius: 50%; /* Make it round */
+      color: #FF6347; /* From index copy */
+      font-size: 1.2rem; /* Adjusted for round button */
       cursor: pointer;
-      padding: 0 0.2rem;
+      padding: 0; /* Remove padding for round button */
       margin: 0;
-      width: auto;
-      transition: color 0.3s ease;
+      width: 30px; /* Fixed width for round button */
+      height: 30px; /* Fixed height for round button */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: color 0.3s ease, background-color 0.3s ease;
       line-height: 1;
-      flex-shrink: 0; /* Prevent button from shrinking */
     }
-    .delete-suggestion-btn:hover {
-      color: #FF4500;
+    #suggestionList .suggestion-actions .remove-btn:hover {
+      background-color: #ffe0e0; /* Light red background on hover */
+      color: #DC143C; /* From index copy */
     }
-
-    .add-form { /* General style for add forms */
-        margin-top: 1.5rem;
-        border-top: 1px solid #DDA0DD;
-        padding-top: 1rem;
+    /* Updated to use <i> tag directly, removing ::before */
+    #suggestionList .suggestion-actions .remove-btn i {
+        font-family: "Font Awesome 6 Free"; /* Ensure correct font-family for FA6 */
+        font-weight: 900;
     }
-    .filter-controls {
-        margin-bottom: 1.5rem;
-    }
-
-    /* Style for empty list text */
-    p[style*="text-align: center"] {
-        color: #C71585 !important;
-        font-style: italic;
-        font-size: 0.95rem;
+    #suggestionList .suggestion-actions .remove-btn span {
+        display: none; /* Hide original text */
     }
 
-    /* Category order list styles */
-    #categoryOrderList, #manageCategoryList {
-        list-style: none;
-        padding: 0;
-    }
-    #categoryOrderList li, #manageCategoryList li {
-        background: #F8F8FF;
-        border: 1px solid #DDA0DD;
-        padding: 0.75rem 1rem;
+    /* Styles for category list items (adapting from index copy's #categoryOrderList li) */
+    #categoryList li, #categoryOrderList li {
+        background: #F8F8FF; /* From index copy */
+        border: 1px solid #DDA0DD; /* From index copy */
+        padding: 0.75rem 1.2rem 0.75rem 0; /* Adjusted padding-left for alignment */
         margin-bottom: 0.5rem;
         border-radius: 0.5rem;
+        padding-left: 1.2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-weight: bold;
-        color: #6A057F;
-        cursor: grab; /* Indicate draggable */
-        transition: background-color 0.2s ease, transform 0.2s ease;
-        /* Prevent text selection on drag for iOS/Safari */
-        -webkit-user-select: none; /* Safari */
-        -moz-user-select: none;    /* Firefox */
-        -ms-user-select: none;     /* IE10+ */
-        user-select: none;         /* Standard */
+        font-weight: bold; /* From index copy */
+        color: #6A057F; /* From index copy */
+        cursor: grab; /* From index copy */
+        transition: background-color 0.2s ease, transform 0.2s ease; /* From index copy */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
-    #categoryOrderList li:hover {
-        background-color: #E6E6FA;
-        transform: scale(1.01);
+    #categoryList li:hover, #categoryOrderList li:hover {
+        background-color: #E6E6FA; /* From index copy */
+        transform: scale(1.01); /* From index copy */
     }
-    #categoryOrderList li.dragging {
+    #categoryOrderList li.dragging { /* From index copy */
         opacity: 0.7;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .drag-handle {
+    .drag-handle { /* From index copy */
         font-size: 1.5rem;
         cursor: grab;
         margin-right: 10px;
         color: #EE82EE;
     }
-    #manageCategoryList li .delete-category-btn {
+    #categoryList .remove-btn { /* Adapting delete button for categories */
         background: none;
-        border: none;
-        color: #FF6347;
-        font-size: 1.2rem;
+        border: 1:px solid #FF6347; /* Added border for round button */
+        border-radius: 50%; /* Make it round */
+        color: #FF6347; /* From index copy */
+        font-size: 1.2rem; /* Adjusted for round button */
         cursor: pointer;
-        padding: 0 0.2rem;
-        margin-left: 10px;
-        transition: color 0.3s ease;
+        padding: 0; /* Remove padding for round button */
+        margin: 0;
+        width: 30px; /* Fixed width for round button */
+        height: 30px; /* Fixed height for round button */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: color 0.3s ease, background-color 0.3s ease;
+        line-height: 1;
     }
-    #manageCategoryList li .delete-category-btn:hover {
-        color: #DC143C;
+    #categoryList .remove-btn:hover {
+        background-color: #ffe0e0; /* Light red background on hover */
+        color: #DC143C; /* From index copy */
+    }
+    /* Updated to use <i> tag directly, removing ::before */
+    #categoryList .remove-btn i {
+        font-family: "Font Awesome 6 Free"; /* Ensure correct font-family for FA6 */
+        font-weight: 900;
+    }
+    #categoryList .remove-btn span {
+        display: none; /* Hide original text */
     }
 
-    /* Styles for the new "Manage Categories" subsection */
-    .manage-categories-subsection {
-        margin-top: 2rem;
-        padding-top: 1.5rem;
+    /* Styles for add forms */
+    .add-form { /* New style based on index copy structure */
+        margin-top: 1.5rem;
         border-top: 1px solid #DDA0DD;
+        padding-top: 1rem;
     }
-    .manage-categories-subsection h3 {
-        color: #E75480;
+    /* Apply add-form to specific elements */
+    #addItemForm, #addBuyLaterItemForm, #addSuggestionForm, #addCategoryForm {
+        margin-top: 1.5rem;
+        border-top: 1px solid #DDA0DD;
+        padding-top: 1rem;
+    }
+    #addItemForm label, #addBuyLaterItemForm label, #addSuggestionForm label, #addCategoryForm label {
+        display: block;
+        margin-top: 0.75rem;
+        font-weight: bold;
+        color: #6A057F;
+    }
+
+    /* Style for empty list text (adapting existing .total-items style) */
+    p.empty-list-message { /* New class for clear distinction */
+        color: #C71585 !important;
+        font-style: italic;
+        font-size: 0.95rem;
         text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    /* Styles for section headers */
+    .section-container h3 {
+        color: #E75480; /* From index copy */
+        border-bottom: 1px solid #FFD1DC; /* From index copy */
+        padding-bottom: 0.3rem;
+        margin-top: 1.5rem;
         margin-bottom: 1rem;
+        padding-left: 0; /* Ensure alignment with list items */
     }
 
     @media (max-width: 640px) {
-        .suggestions-grid {
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        body {
+            /* Try to reduce horizontal padding (0.5rem here) */
+            padding: 0.2rem 0.2rem; /* For example, very little lateral padding */
         }
-        .navigation-buttons button {
-          padding: 0.6rem 1rem;
-          font-size: 0.9rem;
+        .section-container {
+            /* Same for the section container (0.75rem here) */
+            padding: 0.2rem 0.3rem; /* For example, very little lateral padding */
         }
-        .navigation-buttons .toggle-options-btn {
-            padding: 0.6rem 1rem; /* Adjust padding for smaller screens */
+        .bottom-nav {
+            padding: 0.5rem 0;
+        }
+        .nav-item {
+            font-size: 0.7rem;
+            padding: 0.3rem;
+        }
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+        .toggle-nav-button {
+            width: 35px;
+            height: 35px;
+            top: -40px;
+            right: 15px;
+        }
+        .toggle-nav-button i {
+            font-size: 1rem;
         }
     }
   </style>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
+        navigator.serviceWorker.register('service-worker.js')
           .then(reg => console.log('Service Worker registered:', reg.scope))
           .catch(err => console.error('SW error:', err));
       });
@@ -346,134 +492,617 @@
   </script>
 </head>
 <body>
-  <h1>My Shopping List 🛒</h1>
+  <div id="shoppingList" class="section-container section">
+    <h1 id="shoppingListTitle">My Shopping List 🛒</h1>
 
-  <div class="navigation-buttons" id="navigationButtonsContainer">
-    <button id="showShoppingListBtn" class="active">My List</button>
-    <button id="toggleOptionsBtn" class="toggle-options-btn"><i class="fas fa-chevron-up"></i></button>
-    <button id="showSuggestionsBtn" class="option-button">Suggestions</button>
-    <button id="showCategoryOrderBtn" class="option-button">Order by Category</button>
-    <button id="showBuyLaterBtn" class="option-button">Buy Later</button>
+    <ul id="shoppingListToBuy" class="item-list"></ul>
+    <div id="addItemForm" class="add-form">
+        <h3>Add an Item</h3>
+        <input type="text" id="newItemInput" placeholder="Add an item" />
+        <input type="number" id="newQuantityInput" placeholder="Quantity (optional)" value="1" min="1" />
+        <select id="newCategorySelect"></select>
+        <button id="addItemBtn">Add to List</button>
+    </div>
   </div>
 
-  <div id="shoppingListSection" class="section-container active">
-    <h2>Items to Buy</h2>
-    <div id="shoppingList" style="margin-top: 1rem;">
-      </div>
-    <form id="shoppingForm" autocomplete="off" class="add-form">
-        <label for="newItem">Add an item:</label>
-        <input type="text" id="newItem" placeholder="Ex: Milk, Bread, Apples..." required />
-        <button type="submit">Add to List ✅</button>
-    </form>
+  <div id="buyLater" class="section-container section hidden">
+    <h2>Buy Later 🛒</h2>
+    <div id="addBuyLaterItemForm" class="add-form">
+        <label for="newBuyLaterItemInput">Add item to buy later:</label>
+        <input type="text" id="newBuyLaterItemInput" placeholder="Item to buy later" />
+        <button id="addBuyLaterItemBtn">Add</button>
+    </div>
+    <ul id="buyLaterList"></ul>
   </div>
 
-  <div id="suggestionsSection" class="section-container">
-    <h2>Suggestions by Category</h2>
+  <div id="suggestions" class="section-container section hidden">
+    <h2 id="suggestionsTitle">Suggestions 💡</h2>
     <div class="filter-controls">
-        <label for="categoryFilter">Filter by category:</label>
-        <select id="categoryFilter">
-            </select>
+        <label for="suggestionCategoryFilter">Filter by category:</label>
+        <select id="suggestionCategoryFilter"></select>
     </div>
-    <div id="suggestionsList" class="suggestions-grid">
-      </div>
-
-    <form id="addSuggestionForm" autocomplete="off" class="add-form">
-        <label for="newSuggestion">New suggestion:</label>
-        <input type="text" id="newSuggestion" placeholder="Ex: Cheese, Chocolate..." required />
-        
-        <label for="suggestionCategory">Category:</label>
-        <select id="suggestionCategory" required>
-            </select>
-        
-        <button type="submit">Add as suggestion ✨</button>
-    </form>
-  </div>
-
-  <div id="categoryOrderSection" class="section-container">
-    <h2>Order Categories</h2>
-    <p style="text-align: center; color: #6A057F; margin-top: 0.5rem;">Drag and drop categories to set their order in 'My List'.</p>
-    <ul id="categoryOrderList">
-        </ul>
-
-    <div class="manage-categories-subsection">
-        <h3>Manage Categories</h3>
-        <form id="addCategoryForm" autocomplete="off" class="add-form">
-            <label for="newCategoryName">Add new category:</label>
-            <input type="text" id="newCategoryName" placeholder="Ex: Pet Food, Snacks..." required />
-            <button type="submit">Add Category ➕</button>
-        </form>
-        <ul id="manageCategoryList">
-            </ul>
+    <ul id="suggestionList"></ul>
+    <div id="addSuggestionForm" class="add-form">
+        <label for="newSuggestionInput">Add a suggestion:</label>
+        <input type="text" id="newSuggestionInput" placeholder="Suggest an item" />
+        <label for="newSuggestionCategorySelect">Category:</label>
+        <select id="newSuggestionCategorySelect"></select>
+        <button id="addSuggestionBtn">Add Suggestion</button>
     </div>
   </div>
 
-  <div id="buyLaterSection" class="section-container">
-    <h2>Items to Buy Later</h2>
-    <div id="buyLaterList" style="margin-top: 1rem;">
+  <div id="categories" class="section-container section hidden">
+    <h2>Manage Categories 📂</h2>
+    <div id="addCategoryForm" class="add-form">
+        <label for="newCategoryInput">Add new category:</label>
+        <input type="text" id="newCategoryInput" placeholder="New category" />
+        <button id="addCategoryBtn">Add Category</button>
     </div>
-    <form id="buyLaterForm" autocomplete="off" class="add-form">
-        <label for="newBuyLaterItem">Add item to buy later:</label>
-        <input type="text" id="newBuyLaterItem" placeholder="Ex: New book, Fancy gadget..." required />
-        <button type="submit">Add to Buy Later ➡️</button>
-    </form>
+    <h3>Your Categories</h3>
+    <ul id="categoryList"></ul>
+    <h3>Category Order</h3>
+    <p class="empty-list-message">Drag categories to define their order.</p>
+    <ul id="categoryOrderList" class="sortable-list"></ul>
+    </div>
+
+  <div id="settings" class="section-container section hidden">
+    <h2>Settings ⚙️</h2>
+    <p class="empty-list-message">All your data is stored locally on this device.</p>
+    <p class="empty-list-message">There is no share code or synchronization with an online service.</p>
+    <p class="empty-list-message">To back up your data, you can copy and paste the information below (experimental).</p>
+    <textarea id="localDataBackup" rows="10" style="width: 100%; margin-top: 10px;"></textarea>
+    <button id="saveBackupBtn">Save Data</button>
+    <button id="loadBackupBtn">Load Data (overwrites)</button>
+    <hr>
+    <button id="clearAllDataBtn">Clear All Local Data</button>
   </div>
+
+
+  <div class="bottom-nav">
+    <button id="toggleNavBtn" class="toggle-nav-button">
+      <i class="fas fa-chevron-down"></i> </button>
+    <div class="nav-item active" id="navShoppingList">
+      <i class="fas fa-shopping-basket"></i>
+      <span>My List</span>
+    </div>
+    <div class="nav-item" id="navBuyLater">
+      <i class="fas fa-clock"></i>
+      <span>Later</span>
+    </div>
+    <div class="nav-item" id="navSuggestions">
+      <i class="fas fa-lightbulb"></i>
+      <span>Suggestions</span>
+    </div>
+    <div class="nav-item" id="navCategories">
+      <i class="fas fa-folder"></i>
+      <span>Categories</span>
+    </div>
+    <div class="nav-item" id="navSettings">
+      <i class="fas fa-cog"></i>
+      <span>Settings</span>
+    </div>
+  </div>
+
 
   <script>
-    const shoppingForm = document.getElementById('shoppingForm');
-    const newItemInput = document.getElementById('newItem');
-    const shoppingListDiv = document.getElementById('shoppingList');
-
-    const addSuggestionForm = document.getElementById('addSuggestionForm');
-    const newSuggestionInput = document.getElementById('newSuggestion');
-    const suggestionCategorySelect = document.getElementById('suggestionCategory');
-    const suggestionsListDiv = document.getElementById('suggestionsList');
-    const categoryFilterSelect = document.getElementById('categoryFilter');
-
-    const buyLaterForm = document.getElementById('buyLaterForm');
-    const newBuyLaterItemInput = document.getElementById('newBuyLaterItem');
-    const buyLaterListDiv = document.getElementById('buyLaterList');
-
-    const addCategoryForm = document.getElementById('addCategoryForm');
-    const newCategoryNameInput = document.getElementById('newCategoryName');
-    const manageCategoryList = document.getElementById('manageCategoryList');
-
-    // Navigation buttons
-    const navigationButtonsContainer = document.getElementById('navigationButtonsContainer');
-    const showShoppingListBtn = document.getElementById('showShoppingListBtn');
-    const toggleOptionsBtn = document.getElementById('toggleOptionsBtn');
-    const toggleOptionsIcon = toggleOptionsBtn.querySelector('i');
-    const showSuggestionsBtn = document.getElementById('showSuggestionsBtn');
-    const showCategoryOrderBtn = document.getElementById('showCategoryOrderBtn');
-    const showBuyLaterBtn = document.getElementById('showBuyLaterBtn');
+    // --- Global Variables ---
+    const shoppingListToBuy = document.getElementById('shoppingListToBuy');
+    const newItemInput = document.getElementById('newItemInput');
+    const newQuantityInput = document.getElementById('newQuantityInput');
+    const newCategorySelect = document.getElementById('newCategorySelect');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const shoppingListTitle = document.getElementById('shoppingListTitle'); // Added for scroll
 
     // Sections
-    const shoppingListSection = document.getElementById('shoppingListSection');
-    const suggestionsSection = document.getElementById('suggestionsSection');
-    const categoryOrderSection = document.getElementById('categoryOrderSection');
-    const buyLaterSection = document.getElementById('buyLaterSection');
+    const shoppingListSection = document.getElementById('shoppingList');
+    const buyLaterSection = document.getElementById('buyLater');
+    const suggestionsSection = document.getElementById('suggestions');
+    const categoriesSection = document.getElementById('categories');
+    const settingsSection = document.getElementById('settings');
 
+    // Navigation
+    const navShoppingList = document.getElementById('navShoppingList');
+    const navBuyLater = document.getElementById('navBuyLater');
+    const navSuggestions = document.getElementById('navSuggestions');
+    const navCategories = document.getElementById('navCategories');
+    const navSettings = document.getElementById('navSettings');
+    const bottomNav = document.querySelector('.bottom-nav'); // Reference to the bottom menu
+
+    // Buy Later section elements
+    const newBuyLaterItemInput = document.getElementById('newBuyLaterItemInput');
+    const addBuyLaterItemBtn = document.getElementById('addBuyLaterItemBtn');
+    const buyLaterList = document.getElementById('buyLaterList');
+
+    // Suggestions section elements
+    const suggestionsTitle = document.getElementById('suggestionsTitle'); // Added for scroll
+    const suggestionCategoryFilter = document.getElementById('suggestionCategoryFilter'); // New category filter
+    const newSuggestionInput = document.getElementById('newSuggestionInput');
+    const newSuggestionCategorySelect = document.getElementById('newSuggestionCategorySelect');
+    const addSuggestionBtn = document.getElementById('addSuggestionBtn');
+    const suggestionList = document.getElementById('suggestionList');
+
+    // Categories section elements
+    const newCategoryInput = document.getElementById('newCategoryInput');
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
+    const categoryList = document.getElementById('categoryList');
     const categoryOrderList = document.getElementById('categoryOrderList');
 
-    // Default categories (now only for initial setup)
+    // Settings section elements
+    const localDataBackupTextarea = document.getElementById('localDataBackup');
+    const saveBackupBtn = document.getElementById('saveBackupBtn');
+    const loadBackupBtn = document.getElementById('loadBackupBtn');
+    const clearAllDataBtn = document.getElementById('clearAllDataBtn');
+
+
+    // New variable for the toggle button
+    const toggleNavBtn = document.getElementById('toggleNavBtn');
+
+
+    // --- Default Categories ---
     const initialDefaultCategories = [
-        "Petit déjeuner", "Boisson", "Viande", "Fruit", "Légume",
-        "Produit ménager", "Produit de beauté", "Autre"
+        "Fruits et Légumes",
+        "Produits Laitiers",
+        "Viandes et Poissons",
+        "Produits d'Épicerie",
+        "Boulangerie",
+        "Boissons",
+        "Surgelés",
+        "Entretien",
+        "Hygiène",
+        "Autres"
     ];
 
-    // --- Category Management (core functions) ---
+    // --- Utility Functions ---
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        document.getElementById(sectionId).classList.remove('hidden');
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.getElementById('nav' + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.add('active');
+
+        // Load section-specific data if necessary
+        if (sectionId === 'shoppingList') {
+            loadShoppingList();
+        } else if (sectionId === 'buyLater') {
+            loadBuyLaterList();
+        } else if (sectionId === 'suggestions') {
+            updateSuggestionCategoryFilter(); // Update category filter
+            loadSuggestions(); // Load suggestions after filter update
+        } else if (sectionId === 'categories') {
+            renderCategories();
+            loadCategoryOrder();
+        } else if (sectionId === 'settings') {
+            // No automatic loading for textarea, user will click "Save"
+        }
+    }
+
+    // New function to toggle bottom navigation
+    function toggleBottomNav() {
+        const bottomNav = document.querySelector('.bottom-nav');
+        const icon = toggleNavBtn.querySelector('i');
+
+        if (bottomNav.classList.contains('hidden-nav')) {
+            bottomNav.classList.remove('hidden-nav');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        } else {
+            bottomNav.classList.add('hidden-nav');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        }
+        updateBodyPadding(); // Update body padding after toggle
+    }
+
+    // New function to adjust body padding-bottom
+    function updateBodyPadding() {
+        const bottomNavHeight = bottomNav.offsetHeight;
+        // The toggle button is outside the bottom-nav for fixed positioning.
+        // We need to account for both the nav and the toggle button's height
+        // to avoid content being hidden. Assuming toggle button is 40px height + 20px top margin from nav.
+        const effectiveNavHeight = bottomNav.classList.contains('hidden-nav') ? 0 : bottomNavHeight;
+        const toggleButtonHeight = bottomNav.classList.contains('hidden-nav') ? 40 : 0; // Only visible when nav is hidden
+
+        document.body.style.paddingBottom = `${effectiveNavHeight + toggleButtonHeight + 20}px`;
+    }
+
+    // --- General localStorage Functions ---
+    function getFromLocalStorage(key, defaultValue) {
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : defaultValue;
+        } catch (e) {
+            console.error(`Error parsing localStorage key "${key}":`, e);
+            return defaultValue;
+        }
+    }
+
+    function saveToLocalStorage(key, data) {
+        try {
+            localStorage.setItem(key, JSON.stringify(data));
+        } catch (e) {
+            console.error(`Error saving to localStorage key "${key}":`, e);
+            alert("Error saving locally. Your storage might be full.");
+        }
+    }
 
     function getCategories() {
-        return JSON.parse(localStorage.getItem('user_categories')) || initialDefaultCategories;
+        return getFromLocalStorage('user_categories', initialDefaultCategories);
     }
 
     function saveCategories(categories) {
-        localStorage.setItem('user_categories', JSON.stringify(categories));
-        updateAllCategorySelects(); // Update all selects when categories change
-        loadCategoryOrder(); // Update order list (also reloads manage list within it now)
-        loadShoppingList(); // Reload shopping list to reflect category changes
-        loadSuggestions(); // Reload suggestions to reflect category changes
+        saveToLocalStorage('user_categories', categories);
     }
 
+    function updateAllCategorySelects() {
+        const categories = getCategories();
+        const selects = document.querySelectorAll('select#newCategorySelect, select#newSuggestionCategorySelect');
+        selects.forEach(select => {
+            select.innerHTML = '';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        });
+        if (categories.length > 0) {
+            newCategorySelect.value = categories[0];
+            newSuggestionCategorySelect.value = categories[0];
+        }
+    }
+
+    function updateSuggestionCategoryFilter() {
+        const categories = getCategories();
+        suggestionCategoryFilter.innerHTML = '';
+
+        // Add "All categories" option
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = 'All Categories';
+        suggestionCategoryFilter.appendChild(allOption);
+
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            suggestionCategoryFilter.appendChild(option);
+        });
+        suggestionCategoryFilter.value = 'all'; // Default to "All Categories"
+    }
+
+    // --- Shopping List Functions ---
+
+    function getShoppingListItems() {
+        return getFromLocalStorage('shopping_list_items', []);
+    }
+
+    function saveShoppingListItems(items) {
+        saveToLocalStorage('shopping_list_items', items);
+        loadShoppingList(); // Re-render the list after change
+    }
+
+    function updateItemQuantity(itemId, newQuantity) {
+        let items = getShoppingListItems();
+        const itemIndex = items.findIndex(item => item.id === itemId);
+
+        if (itemIndex > -1) {
+            if (newQuantity <= 0) {
+                // If quantity is 0 or less, remove the item
+                items.splice(itemIndex, 1);
+            } else {
+                items[itemIndex].quantity = newQuantity;
+            }
+            saveShoppingListItems(items);
+        }
+    }
+
+    function addItem(name, quantity, category) {
+        if (!name.trim()) {
+            alert("Please enter an item name.");
+            return;
+        }
+        let items = getShoppingListItems();
+        const existingItemIndex = items.findIndex(item =>
+            item.name.toLowerCase() === name.trim().toLowerCase() &&
+            item.category.toLowerCase() === category.toLowerCase()
+        );
+
+        if (existingItemIndex > -1) {
+            // Item exists, update its quantity
+            items[existingItemIndex].quantity += quantity;
+        } else {
+            // Item does not exist, insert new
+            items.push({ id: Date.now(), name: name.trim(), quantity, category });
+        }
+
+        // Add category to local storage if it doesn't exist
+        if (category) {
+            const currentCategories = getCategories();
+            if (!currentCategories.includes(category)) {
+                currentCategories.push(category);
+                saveCategories(currentCategories);
+                updateAllCategorySelects(); // Update category dropdowns
+                updateSuggestionCategoryFilter(); // Update filter dropdown
+                renderCategories(); // Re-render category list in 'Manage Categories'
+                loadCategoryOrder(); // Update category order list
+            }
+        }
+
+        newItemInput.value = '';
+        newQuantityInput.value = '1';
+        saveShoppingListItems(items);
+    }
+
+    function deleteItem(itemId) {
+        let items = getShoppingListItems();
+        items = items.filter(item => item.id !== itemId);
+        saveShoppingListItems(items);
+    }
+
+    function loadShoppingList() {
+        const items = getShoppingListItems();
+        shoppingListToBuy.innerHTML = '';
+
+        if (items.length === 0) {
+            shoppingListToBuy.innerHTML = '<p class="empty-list-message">Your list is currently empty!</p>';
+            return;
+        }
+
+        const categories = getCategories();
+        const categoryOrder = getFromLocalStorage('category_order', categories);
+
+        const groupedItems = {};
+        // Initialize groupedItems with all known categories in order
+        categoryOrder.forEach(cat => groupedItems[cat] = []);
+        // Add any existing categories from items that might not be in the current user_categories
+        items.forEach(item => {
+            const category = item.category || 'Autres'; // Keep 'Autres' in French as it's a default/fallback category name
+            if (!groupedItems[category]) {
+                groupedItems[category] = [];
+            }
+        });
+
+        items.forEach(item => {
+            const category = item.category || 'Autres'; // Keep 'Autres' in French
+            groupedItems[category].push(item);
+        });
+
+        // Render items for each category
+        categoryOrder.forEach(category => {
+            if (groupedItems[category] && groupedItems[category].length > 0) {
+                const categoryHeader = document.createElement('h3');
+                categoryHeader.textContent = category;
+                shoppingListToBuy.appendChild(categoryHeader);
+                // Sort items alphabetically within each category
+                groupedItems[category].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+                groupedItems[category].forEach(item => renderListItem(item, shoppingListToBuy));
+            }
+        });
+        // Handle items with categories not in the current category order (e.g., deleted categories)
+        Object.keys(groupedItems).filter(cat => !categoryOrder.includes(cat)).forEach(category => {
+            if (groupedItems[category].length > 0) {
+                const categoryHeader = document.createElement('h3');
+                categoryHeader.textContent = category;
+                shoppingListToBuy.appendChild(categoryHeader);
+                // Sort items alphabetically within 'Autres' category
+                groupedItems[category].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+                groupedItems[category].forEach(item => renderListItem(item, shoppingListToBuy));
+            }
+        });
+    }
+
+    function renderListItem(item, listElement) {
+        const li = document.createElement('li');
+        li.dataset.id = item.id;
+
+        // Check if it's a shopping list item (has quantity controls) or a buy later item
+        const isShoppingListItem = listElement === shoppingListToBuy;
+
+        if (isShoppingListItem) {
+            // Container for quantity and item name
+            const quantityAndNameContainer = document.createElement('div');
+            quantityAndNameContainer.style.display = 'flex'; // Use flexbox
+            quantityAndNameContainer.style.alignItems = 'center';
+            quantityAndNameContainer.style.flexGrow = '1'; // Allows taking available space
+
+            const quantityControl = document.createElement('div');
+            quantityControl.classList.add('quantity-control');
+            quantityControl.style.display = 'flex'; // Ensure buttons are inline
+            quantityControl.style.alignItems = 'center';
+
+            const minusBtn = document.createElement('button');
+            minusBtn.textContent = '-';
+            minusBtn.onclick = () => {
+                const currentDisplayedQuantity = parseInt(quantitySpan.textContent.replace('x', ''));
+                updateItemQuantity(item.id, currentDisplayedQuantity - 1);
+            };
+            quantityControl.appendChild(minusBtn);
+
+            const quantitySpan = document.createElement('span');
+            quantitySpan.textContent = `${item.quantity}x`; // Add 'x' here
+            quantityControl.appendChild(quantitySpan);
+
+            const plusBtn = document.createElement('button');
+            plusBtn.textContent = '+';
+            plusBtn.onclick = () => {
+                const currentDisplayedQuantity = parseInt(quantitySpan.textContent.replace('x', ''));
+                updateItemQuantity(item.id, currentDisplayedQuantity + 1);
+            };
+            quantityControl.appendChild(plusBtn);
+
+            // Add quantity controls to the container
+            quantityAndNameContainer.appendChild(quantityControl);
+
+            // Create a span for the item name, applying the new CSS class
+            const itemName = document.createElement('span');
+            itemName.classList.add('item-name'); /* Add this class */
+            itemName.textContent = item.name;
+            quantityAndNameContainer.appendChild(itemName);
+
+            li.appendChild(quantityAndNameContainer); // Add the main container
+        } else { // For buyLaterList
+            const itemName = document.createElement('span');
+            itemName.classList.add('item-name'); /* Add this class for consistency */
+            itemName.textContent = item.name;
+            itemName.style.paddingLeft = '1.2rem'; /* Match li padding-left */
+            itemName.style.flexGrow = '1'; /* Allow name to take available space */
+            li.appendChild(itemName);
+        }
+
+        const itemActions = document.createElement('div');
+        itemActions.classList.add('item-actions');
+
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('remove-btn');
+        // Use Font Awesome cross icon directly
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        if (isShoppingListItem) {
+            removeBtn.onclick = () => deleteItem(item.id);
+        } else { // For buyLaterList
+            removeBtn.onclick = () => deleteBuyLaterItem(item.id);
+        }
+
+        itemActions.appendChild(removeBtn);
+
+        li.appendChild(itemActions);
+        listElement.appendChild(li);
+    }
+
+
+    // --- Buy Later Functions ---
+    function getBuyLaterItems() {
+        return getFromLocalStorage('buy_later_items', []);
+    }
+
+    function saveBuyLaterItems(items) {
+        saveToLocalStorage('buy_later_items', items);
+        loadBuyLaterList(); // Re-render the list after change
+    }
+
+    function addBuyLaterItem(name) {
+        if (!name.trim()) {
+            alert("Please enter an item name.");
+            return;
+        }
+        let items = getBuyLaterItems();
+        // Check for existing item to avoid duplicates
+        if (items.some(item => item.name.toLowerCase() === name.trim().toLowerCase())) {
+            alert(`"${name.trim()}" is already in your "Buy Later" list.`);
+            return;
+        }
+        items.push({ id: Date.now(), name: name.trim() });
+        newBuyLaterItemInput.value = '';
+        saveBuyLaterItems(items);
+    }
+
+    function deleteBuyLaterItem(itemId) {
+        let items = getBuyLaterItems();
+        items = items.filter(item => item.id !== itemId);
+        saveBuyLaterItems(items);
+    }
+
+    function loadBuyLaterList() {
+        const items = getBuyLaterItems();
+        buyLaterList.innerHTML = '';
+        if (items.length === 0) {
+            buyLaterList.innerHTML = '<p class="empty-list-message">Your "Buy Later" list is empty!</p>';
+            return;
+        }
+        // Sort buy later items alphabetically
+        items.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+
+        items.forEach(item => {
+            renderListItem(item, buyLaterList);
+        });
+    }
+
+    // --- Suggestions Functions (LOCAL STORAGE) ---
+    function getSuggestions() {
+        return getFromLocalStorage('shopping_suggestions', []);
+    }
+
+    function saveSuggestions(suggestions) {
+        saveToLocalStorage('shopping_suggestions', suggestions);
+        loadSuggestions(); // Refresh the list
+    }
+
+    function addSuggestion(name, category) {
+        if (!name.trim() || !category) {
+            alert("Please enter a name and choose a category for the suggestion.");
+            return;
+        }
+        const suggestions = getSuggestions();
+        // Check for existing suggestion
+        if (suggestions.some(sug => sug.name.toLowerCase() === name.trim().toLowerCase() && sug.category.toLowerCase() === category.toLowerCase())) {
+            alert(`"${name.trim()}" is already a suggestion in the category "${category}"!`);
+            return;
+        }
+
+        const newSuggestion = {
+            id: Date.now(), // Simple unique ID
+            name: name.trim(),
+            category: category
+        };
+        suggestions.push(newSuggestion);
+        newSuggestionInput.value = '';
+        saveSuggestions(suggestions);
+    }
+
+    function deleteSuggestion(suggestionId) {
+        let suggestions = getSuggestions();
+        suggestions = suggestions.filter(sug => sug.id !== suggestionId);
+        saveSuggestions(suggestions);
+    }
+
+    function loadSuggestions() {
+        let suggestions = getSuggestions();
+        suggestionList.innerHTML = '';
+
+        const selectedCategory = suggestionCategoryFilter.value;
+        let filteredSuggestions = selectedCategory === 'all'
+            ? suggestions
+            : suggestions.filter(sug => sug.category === selectedCategory);
+
+        if (filteredSuggestions.length === 0) {
+            suggestionList.innerHTML = '<p class="empty-list-message">No suggestions for this category. Add some below!</p>';
+            return;
+        }
+
+        // Sort suggestions alphabetically by name
+        filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+
+        filteredSuggestions.forEach(suggestion => {
+            const li = document.createElement('li');
+            li.dataset.id = suggestion.id; // Store ID for deletion
+            li.innerHTML = `
+                <div class="suggestion-info">
+                    <span class="name">${suggestion.name}</span>
+                    <span class="category">${suggestion.category}</span>
+                </div>
+                <div class="suggestion-actions">
+                    <button class="remove-btn" data-id="${suggestion.id}"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+            // Add event listener to add to shopping list when clicking the item text
+            li.querySelector('.suggestion-info').addEventListener('click', () => {
+                addItem(suggestion.name, 1, suggestion.category);
+            });
+            // Add event listener for the "✖" button
+            li.querySelector('.remove-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent li click from firing
+                if (confirm(`Delete suggestion "${suggestion.name}" (${suggestion.category})?`)) {
+                    deleteSuggestion(suggestion.id);
+                }
+            });
+            suggestionList.appendChild(li);
+        });
+    }
+
+    // --- Categories Functions ---
     function addCategory(categoryName) {
         if (!categoryName.trim()) {
             alert('Please enter a category name.');
@@ -481,587 +1110,271 @@
         }
         let categories = getCategories();
         if (categories.some(cat => cat.toLowerCase() === categoryName.trim().toLowerCase())) {
-            alert(`Category "${categoryName.trim()}" already exists!`);
+            alert(`The category "${categoryName.trim()}" already exists!`);
             return;
         }
         categories.push(categoryName.trim());
         saveCategories(categories);
-        newCategoryNameInput.value = '';
+        newCategoryInput.value = '';
+        updateAllCategorySelects();
+        updateSuggestionCategoryFilter();
+        renderCategories();
+        loadCategoryOrder(); // Refresh the order list
     }
 
     function deleteCategory(categoryName) {
-        if (!confirm(`Are you sure you want to delete the category "${categoryName}"? This will also remove any suggestions linked to it.`)) {
+        if (!confirm(`Are you sure you want to delete the category "${categoryName}"? This will also delete all related suggestions and update the shopping list.`)) {
             return;
         }
         let categories = getCategories();
         categories = categories.filter(cat => cat !== categoryName);
         saveCategories(categories);
 
-        // Also delete suggestions associated with this category
-        let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
+        // Remove from local category order if present
+        let currentOrder = getFromLocalStorage('category_order', []);
+        currentOrder = currentOrder.filter(cat => cat !== categoryName);
+        saveToLocalStorage('category_order', currentOrder);
+
+        // Logic to remove suggestions linked to this category from local storage
+        let suggestions = getSuggestions();
         suggestions = suggestions.filter(sug => sug.category !== categoryName);
-        localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-        loadSuggestions(); // Refresh suggestions list
+        saveSuggestions(suggestions); // This will also call loadSuggestions()
+
+        // Update shopping list items that used this category
+        let shoppingItems = getShoppingListItems();
+        let itemsUpdated = false;
+        shoppingItems = shoppingItems.map(item => {
+            if (item.category === categoryName) {
+                itemsUpdated = true;
+                return { ...item, category: 'Autres' }; // Reassign to 'Autres' category
+            }
+            return item;
+        });
+        if (itemsUpdated) {
+            saveShoppingListItems(shoppingItems); // This will also call loadShoppingList()
+        }
+
+
+        updateAllCategorySelects();
+        updateSuggestionCategoryFilter();
+        renderCategories();
+        loadCategoryOrder();
+
     }
 
-    function updateAllCategorySelects() {
+    function renderCategories() {
         const categories = getCategories();
-        const allCategoryOptions = ['Toutes', ...categories]; // Add 'Toutes' for filter
-
-        // Update categoryFilterSelect
-        categoryFilterSelect.innerHTML = '';
-        allCategoryOptions.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat;
-            option.textContent = cat;
-            categoryFilterSelect.appendChild(option);
-        });
-
-        // Update suggestionCategorySelect
-        suggestionCategorySelect.innerHTML = '<option value="">Choisir une catégorie</option>';
-        categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat;
-            option.textContent = cat;
-            suggestionCategorySelect.appendChild(option);
-        });
-    }
-
-    function loadManageCategories() {
-        const categories = getCategories();
-        manageCategoryList.innerHTML = '';
+        categoryList.innerHTML = '';
         if (categories.length === 0) {
-            manageCategoryList.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">No categories defined yet. Add some above!</p>';
+            categoryList.innerHTML = '<p class="empty-list-message">No categories defined. Add some above!</p>';
             return;
         }
-        categories.forEach(category => {
+        // Sort categories alphabetically for "Your Categories" list
+        const sortedCategories = [...categories].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+
+        sortedCategories.forEach(category => {
             const li = document.createElement('li');
             li.textContent = category;
             li.innerHTML = `
                 <span>${category}</span>
-                <button class="delete-category-btn" data-category="${category}">✖</button>
+                <button class="remove-btn" data-category="${category}"><i class="fas fa-times"></i></button>
             `;
-            manageCategoryList.appendChild(li);
-        });
-    }
-
-    // --- Shopping list management functions ---
-
-    function loadShoppingList() {
-        let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-        const currentCategoryOrder = JSON.parse(localStorage.getItem('category_order')) || getCategories();
-        shoppingListDiv.innerHTML = '';
-
-        if (items.length === 0) {
-            shoppingListDiv.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">Your list is empty for now!</p>';
-            return;
-        }
-
-        // Sort items alphabetically before categorization
-        items.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
-
-        const categorizedItems = {};
-        currentCategoryOrder.forEach(cat => categorizedItems[cat] = []);
-
-        const itemsInOtherOrUncategorized = [];
-
-        items.forEach(item => {
-            const category = getCategoryForItem(item.name);
-            if (currentCategoryOrder.includes(category)) {
-                categorizedItems[category].push(item);
-            } else {
-                itemsInOtherOrUncategorized.push(item);
-            }
-        });
-
-        currentCategoryOrder.forEach(category => {
-            if (categorizedItems[category] && categorizedItems[category].length > 0) {
-                const categoryHeader = document.createElement('h3');
-                categoryHeader.style.color = '#E75480';
-                categoryHeader.style.marginTop = '1rem';
-                categoryHeader.textContent = category;
-                shoppingListDiv.appendChild(categoryHeader);
-
-                // Sort items within each category alphabetically
-                categorizedItems[category].sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
-
-                categorizedItems[category].forEach((item) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'shopping-list-item';
-                    
-                    // Use item name as identifier for actions, safer than array index after sorting/filtering
-                    // For actual deletion/decrement, we'll find the item by name in the stored array
-                    itemDiv.innerHTML = `
-                        <button class="decrement-btn" data-item-name="${item.name}">-</button>
-                        <span class="quantity">${item.quantity}x</span>
-                        <span>${item.name}</span>
-                        <button class="delete-btn" data-item-name="${item.name}">✖</button>
-                    `;
-                    shoppingListDiv.appendChild(itemDiv);
-                });
-            }
-        });
-
-        if (itemsInOtherOrUncategorized.length > 0) {
-            const otherCategoryHeader = document.createElement('h3');
-            otherCategoryHeader.style.color = '#E75480';
-            otherCategoryHeader.style.marginTop = '1rem';
-            otherCategoryHeader.textContent = 'Autre / Non classé';
-            shoppingListDiv.appendChild(otherCategoryHeader);
-
-            // Sort 'Other' items alphabetically
-            itemsInOtherOrUncategorized.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
-
-            itemsInOtherOrUncategorized.forEach((item) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'shopping-list-item';
-                itemDiv.innerHTML = `
-                    <button class="decrement-btn" data-item-name="${item.name}">-</button>
-                    <span class="quantity">${item.quantity}x</span>
-                    <span>${item.name}</span>
-                    <button class="delete-btn" data-item-name="${item.name}">✖</button>
-                `;
-                shoppingListDiv.appendChild(itemDiv);
+            li.querySelector('.remove-btn').addEventListener('click', (e) => {
+                deleteCategory(e.target.dataset.category || e.target.closest('button').dataset.category);
             });
-        }
-    }
-
-    function addShoppingItem(itemName) {
-      if (!itemName.trim()) return;
-
-      let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-      const lowerCaseItemName = itemName.trim().toLowerCase();
-
-      const existingItemIndex = items.findIndex(item => item.name.toLowerCase() === lowerCaseItemName);
-
-      if (existingItemIndex !== -1) {
-        items[existingItemIndex].quantity++;
-      } else {
-        items.push({ name: itemName.trim(), quantity: 1 });
-      }
-
-      localStorage.setItem('shopping_list_items', JSON.stringify(items));
-      loadShoppingList();
-    }
-
-    function decrementShoppingItemByName(itemName) {
-        let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-        const index = items.findIndex(item => item.name === itemName);
-
-        if (index !== -1) {
-            items[index].quantity--;
-            if (items[index].quantity <= 0) {
-                items.splice(index, 1);
-            }
-            localStorage.setItem('shopping_list_items', JSON.stringify(items));
-            loadShoppingList();
-        }
-    }
-
-    function deleteShoppingItemByName(itemName) {
-      let items = JSON.parse(localStorage.getItem('shopping_list_items')) || [];
-      items = items.filter(item => item.name !== itemName);
-      localStorage.setItem('shopping_list_items', JSON.stringify(items));
-      loadShoppingList();
-    }
-
-    function getCategoryForItem(itemName) {
-        const suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-        const foundSuggestion = suggestions.find(sug => sug.name.toLowerCase() === itemName.toLowerCase());
-        return foundSuggestion ? foundSuggestion.category : 'Autre';
-    }
-
-    // --- Suggestions management functions ---
-
-    function loadSuggestions() {
-      let allSuggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-      suggestionsListDiv.innerHTML = '';
-
-      const selectedCategory = categoryFilterSelect.value;
-      
-      let filteredSuggestions = selectedCategory === 'Toutes' 
-        ? allSuggestions 
-        : allSuggestions.filter(sug => sug.category === selectedCategory);
-
-      // Sort filtered suggestions alphabetically
-      filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
-
-      if (filteredSuggestions.length === 0) {
-          suggestionsListDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #C71585;">No suggestions for this category. Add some below!</p>';
-      }
-
-      filteredSuggestions.forEach((suggestion) => {
-        const suggestionDiv = document.createElement('div');
-        suggestionDiv.className = 'suggestion-item';
-        suggestionDiv.innerHTML = `
-            <span class="suggestion-item-text">${suggestion.name}</span>
-            <button class="delete-suggestion-btn" data-name="${suggestion.name}" data-category="${suggestion.category}">✖</button>
-        `;
-        
-        suggestionDiv.querySelector('.suggestion-item-text').addEventListener('click', () => {
-          addShoppingItem(suggestion.name); 
-        });
-
-        suggestionDiv.querySelector('.delete-suggestion-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const nameToDelete = e.target.dataset.name;
-            const categoryToDelete = e.target.dataset.category;
-            if (confirm(`Delete suggestion "${nameToDelete}" (${categoryToDelete})?`)) {
-                deleteSuggestion(nameToDelete, categoryToDelete);
-            }
-        });
-
-        suggestionsListDiv.appendChild(suggestionDiv);
-      });
-    }
-
-    function addSuggestion(suggestionName, category) {
-      if (!suggestionName.trim() || !category.trim()) {
-        alert('Please enter a suggestion name AND choose a category.');
-        return;
-      }
-
-      let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-      const lowerCaseSuggestionName = suggestionName.trim().toLowerCase();
-
-      if (!suggestions.some(sug => sug.name.toLowerCase() === lowerCaseSuggestionName && sug.category === category)) {
-          suggestions.push({ name: suggestionName.trim(), category: category.trim() });
-          localStorage.setItem('shopping_suggestions', JSON.stringify(suggestions));
-          loadSuggestions(); 
-      } else {
-          alert(`"${suggestionName.trim()}" is already a suggestion in the "${category}" category!`);
-      }
-    }
-
-    function deleteSuggestion(name, category) {
-        let suggestions = JSON.parse(localStorage.getItem('shopping_suggestions')) || [];
-        const updatedSuggestions = suggestions.filter(sug => !(sug.name === name && sug.category === category));
-        localStorage.setItem('shopping_suggestions', JSON.stringify(updatedSuggestions));
-        loadSuggestions();
-    }
-
-    // --- Buy Later list management functions ---
-
-    function loadBuyLaterList() {
-        let items = JSON.parse(localStorage.getItem('buy_later_items')) || [];
-        buyLaterListDiv.innerHTML = '';
-
-        if (items.length === 0) {
-            buyLaterListDiv.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">Your "Buy Later" list is empty!</p>';
-            return;
-        }
-
-        // Sort buy later items alphabetically
-        items.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
-
-        items.forEach((item, index) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'buy-later-item';
-            // Use item name for deletion
-            itemDiv.innerHTML = `
-                <span>${item.name}</span>
-                <button class="delete-btn" data-item-name="${item.name}">✖</button>
-            `;
-            buyLaterListDiv.appendChild(itemDiv);
+            categoryList.appendChild(li);
         });
     }
 
-    function addBuyLaterItem(itemName) {
-        if (!itemName.trim()) return;
-
-        let items = JSON.parse(localStorage.getItem('buy_later_items')) || [];
-        if (!items.some(item => item.name.toLowerCase() === itemName.trim().toLowerCase())) {
-            items.push({ name: itemName.trim() });
-            localStorage.setItem('buy_later_items', JSON.stringify(items));
-            loadBuyLaterList();
-        } else {
-            alert(`"${itemName.trim()}" is already in your "Buy Later" list!`);
-        }
-    }
-
-    function deleteBuyLaterItemByName(itemName) {
-        let items = JSON.parse(localStorage.getItem('buy_later_items')) || [];
-        items = items.filter(item => item.name !== itemName);
-        localStorage.setItem('buy_later_items', JSON.stringify(items));
-        loadBuyLaterList();
-    }
-
-    // --- Category Order management functions (Drag and Drop) ---
-
-    let draggedItem = null;
-    let touchStartTimer = null; // Timer for long press
-    const LONG_PRESS_THRESHOLD = 500; // ms for long press
+    let draggingCategoryElement = null;
 
     function loadCategoryOrder() {
-        const allAvailableCategories = getCategories();
-        let categoryOrder = JSON.parse(localStorage.getItem('category_order')) || allAvailableCategories;
-        
-        categoryOrder = categoryOrder.filter(cat => allAvailableCategories.includes(cat));
-        categoryOrder = [...new Set(categoryOrder)];
-        
-        allAvailableCategories.forEach(cat => {
-            if (!categoryOrder.includes(cat)) {
-                categoryOrder.push(cat);
+        let categories = getCategories();
+        let currentOrder = getFromLocalStorage('category_order', []);
+
+        // Ensure currentOrder only contains valid categories and adds new ones to the end
+        const newOrder = categories.filter(cat => currentOrder.includes(cat));
+        categories.forEach(cat => {
+            if (!newOrder.includes(cat)) {
+                newOrder.push(cat);
             }
         });
+        saveToLocalStorage('category_order', newOrder); // Save reconciled order
+        currentOrder = newOrder; // Use the reconciled order
 
         categoryOrderList.innerHTML = '';
-
-        if (categoryOrder.length === 0) {
-            categoryOrderList.innerHTML = '<p style="text-align: center; color: #C71585; margin-top: 0.5rem;">No categories to order. Add some in "Manage Categories" below!</p>';
-        } else {
-            categoryOrder.forEach(category => {
-                const li = document.createElement('li');
-                li.textContent = category;
-                li.setAttribute('draggable', true); // Keep for desktop
-                li.dataset.category = category;
-                li.innerHTML = `<span class="drag-handle">⠿</span> ${category}`;
-
-                // Touch events for mobile (long press to drag)
-                li.addEventListener('touchstart', (e) => {
-                    e.stopPropagation(); // Prevent immediate text selection/scroll interference
-                    if (touchStartTimer) clearTimeout(touchStartTimer);
-                    
-                    touchStartTimer = setTimeout(() => {
-                        draggedItem = li;
-                        li.classList.add('dragging');
-                        // Optional: Add haptic feedback for long press
-                        if (navigator.vibrate) navigator.vibrate(50);
-                    }, LONG_PRESS_THRESHOLD);
-                }, { passive: false }); 
-
-                li.addEventListener('touchmove', (e) => {
-                    if (touchStartTimer) clearTimeout(touchStartTimer); // Cancel long press if moved
-                    if (!draggedItem) return; // Only proceed if drag is active
-
-                    e.preventDefault(); // Prevent scrolling while dragging
-                    const touch = e.touches[0];
-                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                    
-                    if (target && target.closest('#categoryOrderList li') && target.closest('#categoryOrderList li') !== draggedItem) {
-                        const draggingOver = target.closest('#categoryOrderList li');
-                        const container = categoryOrderList;
-                        const children = Array.from(container.children);
-
-                        const draggingOverIndex = children.indexOf(draggingOver);
-                        const draggedItemIndex = children.indexOf(draggedItem);
-
-                        const rect = draggingOver.getBoundingClientRect();
-                        const offset = touch.clientY - rect.top;
-
-                        if (draggedItemIndex < draggingOverIndex) {
-                            if (offset > rect.height / 2) {
-                                container.insertBefore(draggedItem, draggingOver.nextSibling);
-                            }
-                        } else {
-                            if (offset < rect.height / 2) {
-                                container.insertBefore(draggedItem, draggingOver);
-                            }
-                        }
-                    }
-                }, { passive: false });
-
-                li.addEventListener('touchend', () => {
-                    if (touchStartTimer) clearTimeout(touchStartTimer);
-                    if (draggedItem) {
-                        draggedItem.classList.remove('dragging');
-                        draggedItem = null;
-                        saveCategoryOrder();
-                        loadShoppingList();
-                    }
-                });
-
-                // Standard desktop drag events
-                li.addEventListener('dragstart', (e) => {
-                    draggedItem = li;
-                    setTimeout(() => li.classList.add('dragging'), 0);
-                });
-
-                li.addEventListener('dragend', () => {
-                    draggedItem.classList.remove('dragging');
-                    draggedItem = null;
-                    saveCategoryOrder();
-                    loadShoppingList();
-                });
-
-                li.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    const draggingOver = li;
-                    const container = categoryOrderList;
-                    const children = Array.from(container.children);
-
-                    if (draggedItem === draggingOver) return;
-
-                    const draggingOverIndex = children.indexOf(draggingOver);
-                    const draggedItemIndex = children.indexOf(draggedItem);
-
-                    const rect = draggingOver.getBoundingClientRect();
-                    const offset = e.clientY - rect.top;
-
-                    if (draggedItemIndex < draggingOverIndex) {
-                        if (offset > rect.height / 2) {
-                            container.insertBefore(draggedItem, draggingOver.nextSibling);
-                        }
-                    } else {
-                        if (offset < rect.height / 2) {
-                            container.insertBefore(draggedItem, draggingOver);
-                        }
-                    }
-                });
-
-                categoryOrderList.appendChild(li);
-            });
+        if (currentOrder.length === 0) {
+            categoryOrderList.innerHTML = '<p class="empty-list-message">Drag categories to define their order.</p>';
+            return;
         }
-        saveCategoryOrder();
-        loadManageCategories();
+
+        currentOrder.forEach(category => {
+            const li = document.createElement('li');
+            li.textContent = category;
+            li.draggable = true;
+            li.classList.add('category-item'); // Add a class for styling/selection
+            li.innerHTML = `<i class="fas fa-grip-vertical drag-handle"></i><span>${category}</span>`;
+            categoryOrderList.appendChild(li);
+        });
     }
 
     function saveCategoryOrder() {
-        const order = Array.from(categoryOrderList.children).map(li => li.dataset.category);
-        localStorage.setItem('category_order', JSON.stringify(order));
+        const items = Array.from(categoryOrderList.children);
+        const newOrder = items.map(li => li.querySelector('span').textContent.trim()); // Get text from span
+        saveToLocalStorage('category_order', newOrder);
+        console.log('Category order saved!');
+        loadShoppingList(); // Reload shopping list to apply new order
     }
 
-
-    // --- Section navigation functions ---
-    function showSection(sectionToShow) {
-        // Hide all sections
-        shoppingListSection.classList.remove('active');
-        suggestionsSection.classList.remove('active');
-        categoryOrderSection.classList.remove('active');
-        buyLaterSection.classList.remove('active');
-
-        // Remove 'active' class from all navigation buttons
-        showShoppingListBtn.classList.remove('active');
-        showSuggestionsBtn.classList.remove('active');
-        showCategoryOrderBtn.classList.remove('active');
-        showBuyLaterBtn.classList.remove('active');
-
-        // Show the desired section and update the active button
-        if (sectionToShow === 'shoppingList') {
-            shoppingListSection.classList.add('active');
-            showShoppingListBtn.classList.add('active');
-            loadShoppingList();
-        } else if (sectionToShow === 'suggestions') {
-            suggestionsSection.classList.add('active');
-            showSuggestionsBtn.classList.add('active');
-            updateAllCategorySelects();
-            loadSuggestions();
-        } else if (sectionToShow === 'categoryOrder') {
-            categoryOrderSection.classList.add('active');
-            showCategoryOrderBtn.classList.add('active');
-            loadCategoryOrder();
-        } else if (sectionToShow === 'buyLater') {
-            buyLaterSection.classList.add('active');
-            showBuyLaterBtn.classList.add('active');
-            loadBuyLaterList();
-        }
-    }
-
-    // --- Event handlers ---
-
-    shoppingForm.addEventListener('submit', e => {
-      e.preventDefault();
-      addShoppingItem(newItemInput.value);
-      newItemInput.value = '';
-    });
-
-    shoppingListDiv.addEventListener('click', e => {
-      if (e.target.classList.contains('delete-btn')) {
-        const itemName = e.target.dataset.itemName;
-        deleteShoppingItemByName(itemName);
-      } else if (e.target.classList.contains('decrement-btn')) {
-        const itemName = e.target.dataset.itemName;
-        decrementShoppingItemByName(itemName);
-      }
-    });
-
-    addSuggestionForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const newSugName = newSuggestionInput.value;
-      const sugCategory = suggestionCategorySelect.value;
-      
-      if (!sugCategory) {
-          alert("Please select a category for the suggestion.");
-          return;
-      }
-
-      addSuggestion(newSugName, sugCategory);
-      newSuggestionInput.value = '';
-    });
-
-    categoryFilterSelect.addEventListener('change', loadSuggestions);
-
-    buyLaterForm.addEventListener('submit', e => {
-        e.preventDefault();
-        addBuyLaterItem(newBuyLaterItemInput.value);
-        newBuyLaterItemInput.value = '';
-    });
-
-    buyLaterListDiv.addEventListener('click', e => {
-        if (e.target.classList.contains('delete-btn')) {
-            const itemName = e.target.dataset.itemName;
-            deleteBuyLaterItemByName(itemName);
-        }
-    });
-
-    addCategoryForm.addEventListener('submit', e => {
-        e.preventDefault();
-        addCategory(newCategoryNameInput.value);
-    });
-
-    manageCategoryList.addEventListener('click', e => {
-        if (e.target.classList.contains('delete-category-btn')) {
-            const categoryToDelete = e.target.dataset.category;
-            deleteCategory(categoryToDelete);
-        }
-    });
-
-    // Event handlers for navigation buttons
-    showShoppingListBtn.addEventListener('click', () => showSection('shoppingList'));
-    showSuggestionsBtn.addEventListener('click', () => showSection('suggestions'));
-    showCategoryOrderBtn.addEventListener('click', () => showSection('categoryOrder'));
-    showBuyLaterBtn.addEventListener('click', () => showSection('buyLater'));
-
-    // Toggle options functionality
-    let optionsVisible = true; // Start with options visible
-    toggleOptionsBtn.addEventListener('click', () => {
-        optionsVisible = !optionsVisible;
-        if (optionsVisible) {
-            navigationButtonsContainer.classList.add('show-options');
-            toggleOptionsIcon.classList.remove('fa-chevron-down');
-            toggleOptionsIcon.classList.add('fa-chevron-up');
-        } else {
-            navigationButtonsContainer.classList.remove('show-options');
-            toggleOptionsIcon.classList.remove('fa-chevron-up');
-            toggleOptionsIcon.classList.add('fa-chevron-down');
-            // If the current section is one of the hidden ones, switch to "My List"
-            if (!shoppingListSection.classList.contains('active')) {
-                showSection('shoppingList');
+    // --- Local Data Save/Load Functions (for settings) ---
+    function getAllLocalData() {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            try {
+                data[key] = JSON.parse(localStorage.getItem(key));
+            } catch (e) {
+                data[key] = localStorage.getItem(key); // Store as string if not valid JSON
             }
         }
+        return data;
+    }
+
+    function setAllLocalData(data) {
+        localStorage.clear(); // Clear all existing local storage
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                saveToLocalStorage(key, data[key]);
+            }
+        }
+        // Reload all sections to reflect new data
+        showSection('shoppingList');
+        loadBuyLaterList();
+        loadSuggestions();
+        renderCategories();
+        loadCategoryOrder();
+    }
+
+    // --- Event Listeners ---
+    addItemBtn.addEventListener('click', () => {
+        const itemName = newItemInput.value;
+        const quantity = parseInt(newQuantityInput.value) || 1;
+        const category = newCategorySelect.value;
+        addItem(itemName, quantity, category);
+    });
+
+    addBuyLaterItemBtn.addEventListener('click', () => {
+        addBuyLaterItem(newBuyLaterItemInput.value);
+    });
+
+    addSuggestionBtn.addEventListener('click', () => {
+        addSuggestion(newSuggestionInput.value, newSuggestionCategorySelect.value);
+    });
+
+    addCategoryBtn.addEventListener('click', () => {
+        addCategory(newCategoryInput.value);
+    });
+
+    // Navigation button event listeners
+    navShoppingList.addEventListener('click', () => showSection('shoppingList'));
+    navBuyLater.addEventListener('click', () => showSection('buyLater'));
+    navSuggestions.addEventListener('click', () => showSection('suggestions'));
+    navCategories.addEventListener('click', () => showSection('categories'));
+    navSettings.addEventListener('click', () => showSection('settings'));
+
+    // Toggle nav button listener
+    toggleNavBtn.addEventListener('click', toggleBottomNav);
+
+    // Filter suggestions by category
+    suggestionCategoryFilter.addEventListener('change', loadSuggestions);
+
+    // Settings actions
+    saveBackupBtn.addEventListener('click', () => {
+        const data = getAllLocalData();
+        localDataBackupTextarea.value = JSON.stringify(data, null, 2);
+        alert("Local data copied to the text area. Copy it elsewhere to save it!");
+    });
+
+    loadBackupBtn.addEventListener('click', () => {
+        if (!confirm("WARNING: Loading data will OVERWRITE ALL existing data on this device. Are you sure?")) {
+            return;
+        }
+        try {
+            const data = JSON.parse(localDataBackupTextarea.value);
+            setAllLocalData(data);
+            alert("Data loaded successfully!");
+        } catch (e) {
+            alert("Error loading data. Make sure the JSON format is valid.");
+            console.error("Error loading backup data:", e);
+        }
+    });
+
+    clearAllDataBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to clear ALL your local data (lists, suggestions, categories)? This action is irreversible.")) {
+            localStorage.clear();
+            // Re-initialize default categories after clearing
+            saveToLocalStorage('user_categories', initialDefaultCategories);
+            // Refresh all sections
+            showSection('shoppingList'); // Will also trigger loadShoppingList, etc.
+            alert("All local data has been cleared.");
+        }
+    });
+
+
+    // Scroll to form when title is clicked
+    shoppingListTitle.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevents default browser behavior (e.g., text selection)
+        event.stopPropagation(); // Stops event propagation to avoid other actions
+        document.getElementById('addItemForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    suggestionsTitle.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevents default browser behavior (e.g., text selection)
+        event.stopPropagation(); // Stops event propagation to avoid other actions
+        document.getElementById('addSuggestionForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+
+    // Drag and Drop for Category Order
+    categoryOrderList.addEventListener('dragstart', (e) => {
+        draggingCategoryElement = e.target;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', draggingCategoryElement.innerHTML);
+        e.target.classList.add('dragging');
+    });
+
+    categoryOrderList.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Necessary to allow dropping
+        e.dataTransfer.dropEffect = 'move';
+        const target = e.target.closest('li.category-item');
+        if (target && target !== draggingCategoryElement) {
+            const rect = target.getBoundingClientRect();
+            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > .5;
+            categoryOrderList.insertBefore(draggingCategoryElement, next && target.nextSibling || target);
+        }
+    });
+
+    categoryOrderList.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragging');
+        draggingCategoryElement = null;
+        saveCategoryOrder(); // Save order immediately after drag
     });
 
 
     // --- Initialization on page load ---
     window.addEventListener('load', () => {
+      // Initialize categories if not present in local storage
       if (!localStorage.getItem('user_categories')) {
-          localStorage.setItem('user_categories', JSON.stringify(initialDefaultCategories));
-      }
-      if (!localStorage.getItem('category_order')) {
-          localStorage.setItem('category_order', JSON.stringify(getCategories()));
+          saveToLocalStorage('user_categories', initialDefaultCategories);
       }
 
+      // Initial load of the main shopping list and other UI elements
       updateAllCategorySelects();
-      loadShoppingList();
-      loadSuggestions();
-      loadBuyLaterList();
-      loadCategoryOrder(); 
-
-      showSection('shoppingList');
-      // Ensure options are visible on initial load
-      navigationButtonsContainer.classList.add('show-options');
-      toggleOptionsIcon.classList.remove('fa-chevron-down');
-      toggleOptionsIcon.classList.add('fa-chevron-up');
+      updateSuggestionCategoryFilter();
+      updateBodyPadding(); // Update body padding on initial load
+      renderCategories(); // Initial rendering of categories list
+      loadCategoryOrder(); // Initial load of category order list
+      showSection('shoppingList'); // Start with the shopping list
     });
   </script>
 </body>
