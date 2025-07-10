@@ -1205,30 +1205,40 @@
     let draggingCategoryElement = null;
 
     function loadCategoryOrder() {
-        let categories = getCategories();
-        let currentOrder = getFromLocalStorage('category_order', []);
+        let categories = getCategories(); // Toutes les catégories actuelles
+        let savedOrder = getFromLocalStorage('category_order', []); // Ordre sauvegardé
 
-        // Ensure currentOrder only contains valid categories and adds new ones to the end
-        const newOrder = categories.filter(cat => currentOrder.includes(cat));
+        // Crée un ensemble de catégories actuellement dans l'ordre sauvegardé pour une recherche rapide
+        const savedOrderSet = new Set(savedOrder);
+
+        // Filtre toutes les catégories de savedOrder qui n'existent plus dans getCategories()
+        // Et assure que les nouvelles catégories de getCategories() sont ajoutées à la fin de l'ordre
+        let newOrder = savedOrder.filter(cat => categories.includes(cat));
+
         categories.forEach(cat => {
             if (!newOrder.includes(cat)) {
-                newOrder.push(cat);
+                newOrder.push(cat); // Ajoute toutes les nouvelles catégories à la fin
             }
         });
-        saveToLocalStorage('category_order', newOrder); // Save reconciled order
-        currentOrder = newOrder; // Use the reconciled order
 
-        categoryOrderList.innerHTML = '';
+        // Si après réconciliation, l'ordre a changé, sauvegarde-le
+        if (JSON.stringify(savedOrder) !== JSON.stringify(newOrder)) {
+            saveToLocalStorage('category_order', newOrder); // Sauvegarde l'ordre réconcilié
+        }
+        currentOrder = newOrder; // Utilise l'ordre réconcilié et sauvegardé
+
+        categoryOrderList.innerHTML = ''; // Efface d'abord la liste
+
         if (currentOrder.length === 0) {
-            categoryOrderList.innerHTML = '<p class="empty-list-message">Drag categories to define their order.</p>';
+            categoryOrderList.innerHTML = '<p class="empty-list-message">Faites glisser les catégories pour définir leur ordre.</p>';
             return;
         }
 
         currentOrder.forEach(category => {
             const li = document.createElement('li');
-            li.textContent = category;
+            li.textContent = category; // Ce n'est pas réellement affiché, le span ci-dessous l'est
             li.draggable = true;
-            li.classList.add('category-item'); // Add a class for styling/selection
+            li.classList.add('category-item'); // Ajoute une classe pour le style/la sélection
             li.innerHTML = `<i class="fas fa-grip-vertical drag-handle"></i><span>${category}</span>`;
             categoryOrderList.appendChild(li);
         });
