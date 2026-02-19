@@ -274,26 +274,35 @@
     }
 
     /* Style for suggestion list items (adapting from index copy's .suggestion-item) */
+
+    #suggestionList {
+        list-style: none;
+        padding-left: 0;
+        margin-left: 0;
+        display: flex;
+        flex-wrap: wrap; /* Permet le passage à la ligne */
+        gap: 6px;       /* Espacement réduit entre les boîtes */
+        justify-content: flex-start;
+    }
     #suggestionList li {
-      position: relative;
-      background: #F8F8FF; /* From index copy */
-      border: 1px solid #DDA0DD;
-      color: #6A057F; /* From index copy */
-      padding: 0.6rem 1.2rem 0.6rem 0; /* Adjusted padding-left for alignment */
-      border-radius: 0.75rem; /* From index copy */
-      text-align: left; /* Adjust from center for content */
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Unified transition */
-      user-select: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-right: 5px; /* From index copy */
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* From index copy */
-      margin-top: 0.7rem; /* Consistent spacing */
+        position: relative;
+        background: #F8F8FF;
+        border: 1px solid #DDA0DD;
+        color: #6A057F;
+        border-radius: 0.5rem; /* Coins un peu moins arrondis pour le look "tag" */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        user-select: none;
+        display: inline-flex; /* Utilisation de inline-flex */
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        
+        /* MODIFICATIONS CLÉS */
+        flex: 0 1 auto;       /* L'élément prend la taille de son texte uniquement */
+        width: auto;          /* Important pour annuler les largeurs fixes */
+        min-width: 0;         /* Permet de ne pas casser le flex */
+        padding: 4px 10px;    /* Hauteur très réduite, espace sur les côtés */
+        margin-top: 0;
     }
     #suggestionList li:hover {
       background: #E6E6FA; /* From index copy */
@@ -307,37 +316,27 @@
     }
 
     #suggestionList .suggestion-info {
-        flex-grow: 1;
-        padding-right: 5px;
-        font-weight: 500;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; /* Ensure text stays on one line */
-        padding: 0.6rem 0; /* Add padding to make the clickable area larger */
-        /* Updated for combined name and category on one line with ellipsis */
-        display: flex; /* Use flex to align name and category */
-        gap: 5px; /* Small gap between name and category */
+        display: flex;
+        flex-direction: row; /* Aligner nom et catégorie sur la même ligne */
         align-items: center;
-        position: relative;
-        top: 5px;
+        gap: 6px;
+        padding: 0;
+        top: 0;
     }
+
     #suggestionList .suggestion-info .name {
-        font-weight: bold;
-        color: #6A057F; /* Ensure visibility */
-        padding-left: 1.2rem;
-        white-space: nowrap; /* Prevent name from wrapping */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        flex-shrink: 1; /* Allow name to shrink if needed */
-        min-width: 0; /* Important for flex items with overflow */
+        padding-left: 0;     /* On enlève le gros padding de gauche */
+        font-size: 0.85rem;  /* Texte légèrement plus petit */
+        font-weight: 600;
     }
+
     #suggestionList .suggestion-info .category {
-        font-size: 0.85em;
-        color: #C71585; /* Lighter color for category */
-        white-space: nowrap; /* Prevent category from wrapping */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        flex-shrink: 0; /* Prevent category from shrinking much initially */
+        font-size: 0.7rem;
+        opacity: 0.7;
+        background: rgba(221, 160, 221, 0.2); /* Petit fond pour différencier la catégorie */
+        padding: 2px 5px;
+        border-radius: 4px;
+        display: inline-block;
     }
     /* Adjusted styles for the item name within #shoppingListToBuy and #buyLaterList */
     #shoppingListToBuy li .item-name, #buyLaterList li .item-name {
