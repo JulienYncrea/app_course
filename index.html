@@ -372,6 +372,26 @@
       background-color: #ffe0e0; /* Light red background on hover */
       color: #DC143C; /* From index copy */
     }
+    #suggestionList .suggestion-actions {
+    display: none;
+    }
+
+    /* Style quand le mode suppression est activé */
+    .delete-mode-active #suggestionList li {
+        border: 2px solid #FF6347;
+        background-color: #fff0f0;
+    }
+
+    .delete-mode-active #toggleDeleteModeBtn {
+        background-color: #333 !important;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
     /* Updated to use <i> tag directly, removing ::before */
     #suggestionList .suggestion-actions .remove-btn i {
         font-family: "Font Awesome 6 Free"; /* Ensure correct font-family for FA6 */
@@ -561,10 +581,15 @@
 
   <div id="suggestions" class="section-container section hidden">
     <h2 id="suggestionsTitle">Ideas 💡</h2>
-    <div class="filter-controls">
+    <div class="filter-controls" style="display: flex; align-items: center; gap: 10px;">
+    <div style="flex-grow: 1;">
         <label for="suggestionCategoryFilter">Filter by category:</label>
         <select id="suggestionCategoryFilter"></select>
     </div>
+    <button id="toggleDeleteModeBtn" style="width: auto; margin-top: 25px; background: #FF6347; padding: 0.5rem 0.8rem;">
+        <i class="fas fa-trash-can"></i>
+    </button>
+</div>
     <ul id="suggestionList"></ul>
     <div id="addSuggestionForm" class="add-form">
         <label for="newSuggestionInput">Add a suggestion:</label>
@@ -677,6 +702,8 @@
     const loadBackupBtn = document.getElementById('loadBackupBtn');
     const clearAllDataBtn = document.getElementById('clearAllDataBtn');
 
+    let isDeleteMode = false;
+    const toggleDeleteModeBtn = document.getElementById('toggleDeleteModeBtn');
 
     // New variable for the toggle button
     const toggleNavBtn = document.getElementById('toggleNavBtn');
@@ -1129,34 +1156,30 @@
             : suggestions.filter(sug => sug.category === selectedCategory);
 
         if (filteredSuggestions.length === 0) {
-            suggestionList.innerHTML = '<p class="empty-list-message">No suggestions for this category. Add some below!</p>';
+            suggestionList.innerHTML = '<p class="empty-list-message">No suggestions for this category.</p>';
             return;
         }
 
-        // Sort suggestions alphabetically by name
         filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
 
         filteredSuggestions.forEach(suggestion => {
             const li = document.createElement('li');
-            li.dataset.id = suggestion.id; // Store ID for deletion
             li.innerHTML = `
                 <div class="suggestion-info">
                     <span class="name">${suggestion.name}</span>
                     <span class="category">${suggestion.category}</span>
                 </div>
-                <div class="suggestion-actions">
-                    <button class="remove-btn" data-id="${suggestion.id}"><i class="fas fa-times"></i></button>
-                </div>
             `;
-            // Add event listener to add to shopping list when clicking the item text
-            li.querySelector('.suggestion-info').addEventListener('click', () => {
-                addItem(suggestion.name, 1, suggestion.category);
-            });
-            // Add event listener for the "✖" button
-            li.querySelector('.remove-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent li click from firing
-                if (confirm(`Delete suggestion "${suggestion.name}" (${suggestion.category})?`)) {
-                    deleteSuggestion(suggestion.id);
+
+            li.addEventListener('click', () => {
+                if (isDeleteMode) {
+                    // Mode Suppression
+                    if (confirm(`Delete suggestion "${suggestion.name}"?`)) {
+                        deleteSuggestion(suggestion.id);
+                    }
+                } else {
+                    // Mode Ajout normal
+                    addItem(suggestion.name, 1, suggestion.category);
                 }
             });
             suggestionList.appendChild(li);
@@ -1365,7 +1388,17 @@
         localDataBackupTextarea.value = JSON.stringify(data, null, 2);
         alert("Local data copied to the text area. Copy it elsewhere to save it!");
     });
-
+    toggleDeleteModeBtn.addEventListener('click', () => {
+        isDeleteMode = !isDeleteMode;
+        const suggestionsContainer = document.getElementById('suggestions');
+        
+        if (isDeleteMode) {
+            suggestionsContainer.classList.add('delete-mode-active');
+        } else {
+            suggestionsContainer.classList.remove('delete-mode-active');
+        }
+        loadSuggestions(); 
+    });
     loadBackupBtn.addEventListener('click', () => {
         if (!confirm("WARNING: Loading data will OVERWRITE ALL existing data on this device. Are you sure?")) {
             return;
@@ -1431,7 +1464,7 @@
         saveCategoryOrder(); // Save order immediately after drag
     });
 
-
+    
     // --- Initialization on page load ---
     window.addEventListener('load', () => {
       // Initialize categories if not present in local storage
