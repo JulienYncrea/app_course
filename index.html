@@ -213,6 +213,34 @@
       font-weight: bold;
       color: #FFD700; /* Active color from index copy's navigation buttons */
     }
+    .category-header-clickable {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    }
+
+    /* Rotation de l'icône */
+    .category-header-clickable.collapsed i {
+        transform: rotate(-90deg);
+    }
+
+    /* Masquer tous les <li> qui suivent un <h3> ayant la classe 'collapsed' 
+    jusqu'au prochain <h3> */
+    h3.collapsed + li, 
+    h3.collapsed ~ li:not(h3 ~ h3 ~ li) {
+        display: none !important;
+    }
+
+    /* Version simple pour masquer les éléments frères jusqu'au prochain titre */
+    h3.collapsed + li,
+    h3.collapsed + li ~ li {
+        display: none;
+    }
+    h3.collapsed + li ~ h3,
+    h3.collapsed + li ~ h3 ~ li {
+        display: flex; /* Réaffiche dès qu'on croise un autre h3 */
+    }
     .toggle-nav-button {
       position: absolute;
       top: -45px;
@@ -872,41 +900,58 @@
         const categoryOrder = getFromLocalStorage('category_order', categories);
 
         const groupedItems = {};
-        // Initialize groupedItems with all known categories in order
         categoryOrder.forEach(cat => groupedItems[cat] = []);
-        // Add any existing categories from items that might not be in the current user_categories
+        
         items.forEach(item => {
-            const category = item.category || 'Autres'; // Keep 'Autres' in French as it's a default/fallback category name
+            const category = item.category || 'Autres'; 
             if (!groupedItems[category]) {
                 groupedItems[category] = [];
             }
         });
 
         items.forEach(item => {
-            const category = item.category || 'Autres'; // Keep 'Autres' in French
+            const category = item.category || 'Autres'; 
             groupedItems[category].push(item);
         });
 
-        // Render items for each category
-        categoryOrder.forEach(category => {
+        // --- Rendu des catégories ---
+        const allCategories = [...categoryOrder, ...Object.keys(groupedItems).filter(cat => !categoryOrder.includes(cat))];
+
+        allCategories.forEach(category => {
             if (groupedItems[category] && groupedItems[category].length > 0) {
                 const categoryHeader = document.createElement('h3');
-                categoryHeader.textContent = category;
+                
+                // Style et icône
+                categoryHeader.style.cursor = 'pointer';
+                categoryHeader.style.display = 'flex';
+                categoryHeader.style.justifyContent = 'space-between';
+                categoryHeader.style.alignItems = 'center';
+                categoryHeader.innerHTML = `<span>${category}</span><i class="fas fa-chevron-down" style="transition:0.3s"></i>`;
+                
                 shoppingListToBuy.appendChild(categoryHeader);
-                // Sort items alphabetically within each category
+                
+                // On stocke les éléments li créés pour cette catégorie précise
+                const currentCategoryItems = [];
+                
                 groupedItems[category].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-                groupedItems[category].forEach(item => renderListItem(item, shoppingListToBuy));
-            }
-        });
-        // Handle items with categories not in the current category order (e.g., deleted categories)
-        Object.keys(groupedItems).filter(cat => !categoryOrder.includes(cat)).forEach(category => {
-            if (groupedItems[category].length > 0) {
-                const categoryHeader = document.createElement('h3');
-                categoryHeader.textContent = category;
-                shoppingListToBuy.appendChild(categoryHeader);
-                // Sort items alphabetically within 'Autres' category
-                groupedItems[category].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-                groupedItems[category].forEach(item => renderListItem(item, shoppingListToBuy));
+                
+                groupedItems[category].forEach(item => {
+                    renderListItem(item, shoppingListToBuy);
+                    // On récupère le dernier élément ajouté à la liste (le <li>)
+                    currentCategoryItems.push(shoppingListToBuy.lastElementChild);
+                });
+
+                // Logique de clic : on cache/affiche les éléments du tableau currentCategoryItems
+                categoryHeader.onclick = () => {
+                    const icon = categoryHeader.querySelector('i');
+                    const isCurrentlyHidden = currentCategoryItems[0].style.display === 'none';
+                    
+                    currentCategoryItems.forEach(li => {
+                        li.style.display = isCurrentlyHidden ? 'flex' : 'none';
+                    });
+                    
+                    icon.style.transform = isCurrentlyHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+                };
             }
         });
     }
